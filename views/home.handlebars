@@ -1,0 +1,25 @@
+<div class="container mt-5">
+    <h1 class="text-center mb-4">PRODUCTS</h1>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+        {{#each listadeproductos}}
+        <div class="col mb-4">
+            <div class="card h-100 bg-light">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-tag"></i> Code: {{this.code}}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title text-white">{{this.title}}</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-info-circle"></i> ID: {{this.id}}</li>
+                        <li><i class="bi bi-file-text"></i> Description: {{this.description}}</li>
+                        <li><i class="bi bi-currency-dollar"></i> Price: ${{this.price}}</li>
+                        <li><i class="bi bi-grid"></i> Category: {{this.category}}</li>
+                        <li><i class="bi bi-box"></i> Stock: {{this.stock}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>

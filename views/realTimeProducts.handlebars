@@ -1,0 +1,86 @@
+<form class="row g-3 mx-4" id="formProduct">
+    <h2 class="mb-4">Real Time Products</h2>
+
+    <!-- Nombre del Producto -->
+    <div class="col-md-6">
+        <label for="title" class="form-label">Nombre del Producto</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-box"></i></span>
+            <input class="form-control" type="text" name="title" id="title" placeholder="Ej. Smartphone" required>
+        </div>
+    </div>
+
+    <!-- Descripción -->
+    <div class="col-md-6">
+        <label for="description" class="form-label">Descripción</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-file-text"></i></span>
+            <input class="form-control" type="text" name="description" id="description" placeholder="Ej. Último modelo con características avanzadas" required>
+        </div>
+    </div>
+
+    <!-- Stock -->
+    <div class="col-md-6">
+        <label for="stock" class="form-label">Stock</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-box"></i></span>
+            <input class="form-control" type="number" name="stock" id="stock" placeholder="Ej. 100" required>
+        </div>
+    </div>
+
+    <!-- Categoría -->
+    <div class="col-md-6">
+        <label for="category" class="form-label">Categoría</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-grid"></i></span>
+            <input class="form-control" type="text" name="category" id="category" placeholder="Ej. Electrónicos" required>
+        </div>
+    </div>
+
+    <!-- Precio -->
+    <div class="col-md-6">
+        <label for="price" class="form-label">Precio</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+            <input class="form-control" type="number" name="price" id="price" placeholder="Ej. 499.99" required>
+        </div>
+    </div>
+
+
+
+    <!-- Código -->
+    <div class="col-md-6">
+        <label for="code" class="form-label">Código</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-tag"></i></span>
+            <input class="form-control" type="text" name="code" id="code" placeholder="Ej. ABC123" required>
+        </div>
+    </div>
+
+    <!-- Botón Registrar -->
+    <div class="col-12 mt-4">
+        <button class="btn btn-primary" type="submit" id="add-btn">Registrar </button>
+    </div>
+
+    <h2 class="mt-4">Eliminar Producto:</h2>
+
+    <!-- ID del Producto a Eliminar -->
+    <div class="col-md-6">
+        <label for="id-prod" class="form-label">ID del Producto</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-trash"></i></span>
+            <input class="form-control" type="number" name="id-prod" id="id-prod" placeholder="Ej. 123">
+        </div>
+    </div>
+
+    <!-- Botón Eliminar -->
+    <div class="col-12 mt-4">
+        <button class="btn btn-danger" type="button" id="delete-btn">Eliminar</button>
+    </div>
+</form>
+
+<div class="row mt-4" id="list-products"></div>
+
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realTime.js"></script>

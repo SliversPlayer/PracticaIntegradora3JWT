@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "title": "Pantalón",
+    "description": "Pantalón vaquero",
+    "price": 25.99,
+    "thumbnail": "img/pantalon.jpg",
+    "code": "P001",
+    "stock": 3
+  },
+  {
+    "id": 2,
+    "title": "blusa",
+    "description": "blusa azul",
+    "price": 29.99,
+    "thumbnail": "img/blusa.jpg",
+    "code": "P002",
+    "stock": 20
+  },
+  {
+    "id": 3,
+    "title": "Chaleco",
+    "description": "chaleco de lana",
+    "price": 35.9,
+    "thumbnail": "img/chaleco.jpg",
+    "code": "P003",
+    "stock": 100
+  },
+  {
+    "id": 4,
+    "title": "Peluca",
+    "description": "Peluquin",
+    "price": 5.9,
+    "thumbnail": "img/Peluca.jpg",
+    "code": "P004",
+    "stock": 5
+  },
+  {
+    "id": 5,
+    "title": "Nuevo Producto",
+    "description": "Descripción del nuevo producto",
+    "price": 19.99,
+    "thumbnail": "NP001",
+    "code": 10,
+    "stock": "Electrónicos"
+  },
+  {
+    "id": 6,
+    "title": "Perico",
+    "description": "Pericote mortal - Raquetazo",
+    "price": "150",
+    "category": "consumo",
+    "thumbnail": "raquetazo image",
+    "code": "abc123",
+    "stock": "20"
+  }
+]

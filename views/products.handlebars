@@ -1,0 +1,141 @@
+<div class="container mt-5">
+    <div class="text-center mb-3"> <!-- Contenedor para centrar horizontalmente -->
+        <h1>Productos</h1>
+    </div>
+    <!-- Formulario de búsqueda por categoría, límite y ordenamiento de productos -->
+    <div class="row mb-3">
+        <!-- Columna para el formulario de búsqueda por categoría -->
+        <div class="col-md-auto">
+            <form action="/api/products" method="GET" class="mb-md-0">
+                <div class="input-group">
+                    <input type="text" name="category" class="form-control" placeholder="Buscar por categoría">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Columna para el formulario de límite de productos por página -->
+        <div class="col-md-auto">
+            <form action="/api/products" method="GET" id="limitForm">
+                <div class="input-group">
+                    <input type="hidden" name="page" value="{{pagination.page}}">
+                    <input id="limitNumber" type="number" name="limit" class="form-control" placeholder="Límite de productos" min="1" value="{{currentLimit}}">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Cambiar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Columna para el formulario de ordenamiento por precio -->
+        <div class="col-md-auto">
+            <form action="/api/products" method="GET" id="sortForm" class="mb-md-0">
+                <div class="input-group">
+                    <input type="hidden" name="page" value="{{pagination.page}}">
+                    <input type="hidden" name="limit" value="{{currentLimit}}">
+                    <select class="form-select" name="sort" aria-label="Ordenar por precio">
+                        <option selected>Ordenar por precio</option>
+                        <option value="asc">Ascendente</option>
+                        <option value="desc">Descendente</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Ordenar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de productos -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+        {{#each products}}
+        <div class="col mb-4">
+            <div class="card h-100 bg-light">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-tag"></i> Code: {{this.code}}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{this.title}}</h5>
+                    <ul class="list-unstyled">
+                        <!-- <li><i class="bi bi-info-circle"></i> ID: {{this.id}}</li> -->
+                        <li><i class="bi bi-file-text"></i> Description: {{this.description}}</li>
+                        <li><i class="bi bi-currency-dollar"></i> Price: ${{this.price}}</li>
+                        <li><i class="bi bi-grid"></i> Category: {{this.category}}</li>
+                        <li><i class="bi bi-box"></i> Stock: {{this.stock}}</li>
+                    </ul>
+                    <!-- Botón Agregar al Carro -->
+                    <button class="btn btn-primary add-to-cart" data-id="{{this.id}}">
+                        Agregar al Carro
+                    </button>
+                    <!-- Botón Ver Detalles -->
+                    <a href="/api/products/{{this._id}}" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
+    <!-- Contenedor para el formulario y los botones de navegación -->
+    <div class="row justify-content-center mb-3">
+        <!-- Columna para el formulario de navegación -->
+        <div class="col-4">
+            <form action="/api/products" method="GET" onsubmit="setDefaultPage()">
+                <div class="input-group">
+                    <input id="pageNumber" type="number" name="page" class="form-control" placeholder="Número de página" min="1">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Ir</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Columna para los botones de cambio de página -->
+        <div class="col-4 text-center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination mb-0 justify-content-center">
+                    <!-- Botón de página anterior -->
+                    {{#if pagination.hasPrevPage}}
+                    <li class="page-item">
+                        <a class="page-link" href="{{pagination.prevLink}}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {{else}}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </span>
+                    </li>
+                    {{/if}}
+
+                    <!-- Información de la página actual -->
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            Página {{pagination.page}} de {{pagination.totalPages}}
+                        </span>
+                    </li>
+
+                    <!-- Botón de página siguiente -->
+                    {{#if pagination.hasNextPage}}
+                    <li class="page-item">
+                        <a class="page-link" href="{{pagination.nextLink}}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {{else}}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </span>
+                    </li>
+                    {{/if}}
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Columna vacía para balancear -->
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<script src="../public/js/defaultPage.js"></script>

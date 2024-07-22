@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Perfil de Usuario</h2>
+            </div>
+            <div class="card-body">
+                <p><strong>Nombre:</strong> {{user.first_name}}</p>
+                <p><strong>Apellido:</strong> {{user.last_name}}</p>
+                <p><strong>Email:</strong> {{user.email}}</p>
+                <p><strong>Edad:</strong> {{user.age}}</p>
+                <form action="/api/sessions/logout" method="POST">
+                    <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userEmail = "{{user.email}}";
+            if (userEmail === "adminCoder@coder.com") {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Bienvenido Administrador!',
+                    text: 'Has iniciado sesión correctamente.',
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet"> <!-- Enlace al CSS personalizado -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2 class="card-title">Registro</h2>
+                    </div>
+                    <div class="card-body">
+                        <form action="/api/sessions/register" method="POST">
+                            <div class="form-group">
+                                <label for="first_name">Nombre:</label>
+                                <input type="text" class="form-control" name="first_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Apellido:</label>
+                                <input type="text" class="form-control" name="last_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Edad:</label>
+                                <input type="number" class="form-control" name="age" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Contraseña:</label>
+                                <input type="password" class="form-control" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <a href="/login" class="btn btn-custom btn-block">Iniciar Sesión</a> <!-- Botón personalizado -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Puedes agregar aquí scripts adicionales si es necesario.
+    </script>
+</body>
+</html>

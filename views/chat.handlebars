@@ -1,0 +1,22 @@
+<h1>Chat</h1>
+<form id="message-form" action="/api/messages" method="POST">
+    <input type="text" name="user" placeholder="Usuario">
+    <input type="text" id="message-input" name="message" placeholder="Mensaje">
+    <button type="submit">Enviar</button>
+</form>
+<div id="chat-box">
+    {{#each messages}}
+    <div class="message">
+        <strong>{{user}}</strong>: {{message}}
+    </div>
+    {{/each}}
+</div>
+<script>
+    document.getElementById('message-form').addEventListener('submit', function(event) {
+        const messageInput = document.getElementById('message-input');
+        if (messageInput.value.trim() === '') {
+            alert('El mensaje no puede estar vacío');
+            event.preventDefault(); // Evitar el envío del formulario si el mensaje está vacío
+        }
+    });
+</script>
