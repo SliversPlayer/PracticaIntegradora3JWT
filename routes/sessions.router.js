@@ -1,12 +1,25 @@
 import { Router } from 'express';
-import { loginUser, registerUser } from '../controllers/sessions.controller.js';
+import passport from 'passport';
+import {
+    registerUser,
+    loginUser,
+    logoutUser,
+    failRegister,
+    failLogin,
+    githubCallback
+} from '../../controllers/user.controller.js';
 
 const router = Router();
 
-// Ruta para el login
-router.post('/login', loginUser);
+router.post('/register', passport.authenticate('register', { failureRedirect: 'failregister' }), registerUser);
+router.get('/failregister', failRegister);
 
-// Ruta para el registro
-router.post('/register', registerUser);
+router.post('/login', passport.authenticate('login', { failureRedirect: 'faillogin' }), loginUser);
+router.get('/faillogin', failLogin);
+
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }), async (req, res) => { });
+router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }), githubCallback);
+
+router.post('/logout', logoutUser);
 
 export default router;

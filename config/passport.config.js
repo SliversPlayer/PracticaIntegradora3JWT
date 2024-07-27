@@ -4,6 +4,7 @@ import GitHubStrategy from 'passport-github2';
 import usersModel from '../models/user.model.js'
 import { createHash, isValidPassword } from "../utils.js";
 import dotenv from 'dotenv';
+
 // Cargar variables de entorno test
 dotenv.config();
 const userService = usersModel;
