@@ -16,6 +16,9 @@ import messagesRouter from '../src/routes/messages.router.js';
 import viewsRouter from '../src/routes/views.router.js';
 import socketProducts from './listener/socketProducts.js';
 import sessionsRouter from './routes/api/sessions.js';
+// Importa mocking routers
+import mockingRouter from './routes/mocking.router.js';
+
 // Cargar variables de entorno
 dotenv.config();
 const app = express();
@@ -34,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname + "/src/public"));
 // Configuración de Handlebars
 app.engine('handlebars', handlebars.engine());
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'handlebars');
 // Middleware
 app.use(express.json());
@@ -55,12 +58,14 @@ app.use('/api/messages', messagesRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/sessions', sessionsRouter);
+app.use('/api', mockingRouter);
 const httpServer = app.listen(PORT, () => {
     try {
         console.log(`Listening to the port ${PORT}\nAcceder a:`);
         console.log(`\t1). http://localhost:${PORT}/api/products`);
         console.log(`\t2). http://localhost:${PORT}/api/messages`);
         console.log(`\t3). http://localhost:${PORT}/login`);
+        console.log(`\t3). http://localhost:${PORT}/api/mockingproducts`);
     } catch (err) {
         console.log(err);
     }
