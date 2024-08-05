@@ -1,21 +1,17 @@
-import { CustomError } from '../utils/errors.js'
-import logger from '../utils/logger.js'
 
-function errorHandler(err, req, res, next) {
-    logger.error(err.message)
+import errorMessages from '../utils/errorMessages.js';
 
-    if (err instanceof CustomError) {
-        return res.status(err.statusCode).json({
-            status: 'error',
-            message: err.message,
-            details: err.details,
-        })
-    }
+const errorHandler = (err, req, res, next) => {
+    console.error(err); // Log de error en el servidor
 
-    res.status(500).json({
+    const { status = 500, message = 'Error interno del servidor' } = err;
+    const errorResponse = {
         status: 'error',
-        message: 'Internal Server Error',
-    })
-}
+        code: status,
+        message: errorMessages[message]?.message || message
+    };
+
+    res.status(status).json(errorResponse);
+};
 
 export default errorHandler;
