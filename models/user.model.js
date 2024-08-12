@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userCollection = "Users";
 
@@ -11,7 +12,8 @@ const userSchema = new mongoose.Schema({
     cart: { type: mongoose.Schema.Types.ObjectId, ref: 'carts' },
     role: { type: String, default: 'user' } 
 });
-//Hash de contraseña
+
+// Hash de contraseña
 userSchema.pre('save', function (next) {
     if (this.isModified('password') || this.isNew) {
         if (!this.password.startsWith('$2a$')) {
@@ -24,16 +26,11 @@ userSchema.pre('save', function (next) {
     next();
 });
 
-//Comparar la password
+// Comparar la password
 userSchema.methods.comparePassword = async function (candidatePassword) {
-    try {
-        const result = await bcrypt.compare(candidatePassword, this.password);
-        console.log('Comparación de contraseñas:', result);
-        return result;
-    } catch (error) {
-        throw new Error(error);
-    }
+    return await bcrypt.compare(candidatePassword, this.password);
 };
-const usersModel = mongoose.model(userCollection, userSchema);
 
-export default usersModel
+const User = mongoose.model(userCollection, userSchema);
+
+export default User;

@@ -1,13 +1,11 @@
 import jwt from 'jsonwebtoken';
 
 const authMiddleware = (req, res, next) => {
-    const authHeader = req.header('Authorization');
-    
-    if (!authHeader) {
+    const token = req.cookies.authToken; // Obtener el token de la cookie
+
+    if (!token) {
         return res.status(401).send({ error: 'No autenticado' });
     }
-
-    const token = authHeader.replace('Bearer ', '');
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);

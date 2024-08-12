@@ -1,5 +1,5 @@
 import UserRepository from './user.repository.js';
-import UserModel from '../dao/models/user.model.js';
+import UserModel from '../models/user.model.js';
 
 export default class UserRepositoryImpl extends UserRepository {
     async findUserByEmail(email) {

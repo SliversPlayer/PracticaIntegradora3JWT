@@ -13,10 +13,16 @@ export const comparePassword = async (candidatePassword, hashedPassword) => {
 
 // Función para generar un token JWT
 export const generateAuthToken = (user) => {
+    const secret = process.env.JWT_SECRET;
+    const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
+
+    if (!secret) {
+        throw new Error('JWT_SECRET is not defined');
+    }
+
     return jwt.sign(
         { _id: user._id, email: user.email, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
+        secret,
+        { expiresIn }
     );
 };
-

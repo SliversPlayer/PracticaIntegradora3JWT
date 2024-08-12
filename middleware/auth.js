@@ -28,7 +28,7 @@ export const isNotAuthenticated = (req, res, next) => {
     try {
         const token = authHeader.replace('Bearer ', '');
         jwt.verify(token, process.env.JWT_SECRET);
-        res.redirect('/profile'); // Usuario ya autenticado, redirigir a otra página
+        res.redirect('/current'); // Usuario ya autenticado, redirigir a otra página
     } catch (error) {
         next(); // Token inválido, tratar como no autenticado
     }
