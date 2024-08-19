@@ -4,6 +4,7 @@ import Cart from '../models/cart.model.js';
 export default class CartRepositoryImpl extends CartRepository {
     async createCart() {
         const newCart = new Cart();
+        console.log("hola");
         return await newCart.save();
     }
 

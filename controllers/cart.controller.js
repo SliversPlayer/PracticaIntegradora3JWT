@@ -30,7 +30,7 @@ const getCartById = async (req, res) => {
     }
     res.status(200).json(cart);
   } catch (error) {
-    res.status(500).json({ error: 'Error obteniendo el carrito.' });
+    res.status(500).json({ error: 'Error obteniendo el carrito1.' });
   }
 };
 
