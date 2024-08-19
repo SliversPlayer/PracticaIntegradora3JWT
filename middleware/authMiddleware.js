@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
 
 const authMiddleware = (req, res, next) => {
-    const token = req.cookies.authToken;
+    const token = req.cookies.authToken || req.headers.authorization.split(' ')[1];
     if (!token) {
-        return res.status(401).send({ error: 'No autenticado' });
+        return res.status(401).send({ error: 'No token, No autenticado' });
     }
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('Decoded JWT:', decoded);
+        //console.log('Decoded JWT:', decoded);
         req.user = decoded;
         next();
     } catch (error) {

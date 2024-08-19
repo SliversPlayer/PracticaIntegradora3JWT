@@ -2,31 +2,54 @@ import express from 'express';
 import cartModel from '../models/cart.model.js';
 import productModel from '../models/product.model.js';
 import authMiddleware from '../middleware/authMiddleware.js';
+import cartController from '../controllers/cart.controller.js';
 
 const cartRouter = express.Router();
 
-// Crear un carrito (opcional si lo haces al registrar usuario)
-cartRouter.post('/', authMiddleware, async (req, res) => {
-    try {
-        const newCart = await cartModel.create({ products: [] });
-        res.status(201).send(newCart);
-    } catch (error) {
-        res.status(500).send({ error: 'Error al crear el carrito' });
-    }
-});
+cartRouter.post('/', authMiddleware, cartController.createCart);
+cartRouter.get('/', authMiddleware, cartController.getCartById);
+cartRouter.post('/:productId', authMiddleware, cartController.addProductToCart);
 
-// Obtener el carrito del usuario
-cartRouter.get('/:cartId', authMiddleware, async (req, res) => {
-    try {
-        //const cart = await cartModel.findById(req.params.cartId).populate('products.product');
-        const cart = await cartModel.findById(req.params.cartId).populate('products.product');
-        if (!cart) return res.status(404).send({ error: 'Carrito no encontrado' });
-        res.render('cart', { cart });
-    } catch (error) {
-        console.error('Error al mostrar el carrito:', error);
-        res.status(500).send({ error: 'Error en el servidor' });
-    }
-});
+// // Crear un nuevo carrito para un usuario específico
+// cartRouter.post('/:uid', async (req, res) => {
+//     try {
+//         const userId = req.params.uid;
+//         const cartData = req.body;
+//         const savedCart = await cartDAO.createForUser(userId, cartData);
+//         res.status(201).json({ status: 'success', payload: savedCart });
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(400).json({ status: 'error', message: 'Error al crear el carrito' });
+//     }
+// });
+
+// Crear un carrito (opcional si lo haces al registrar usuario)
+
+// cartRouter.post('/:cartId/products/:productId', cartController.addProductToCart);
+
+// cartRouter.post('/', authMiddleware, async (req, res) => {
+//     try {
+//         const newCart = await cartModel.create({ products: [] });
+//         res.status(201).send(newCart);
+//     } catch (error) {
+//         res.status(500).send({ error: 'Error al crear el carrito' });
+//     }
+// });
+
+
+// // Ruta para obtener el carrito del usuario por ID
+// cartRouter.get('/:cartId', authMiddleware, async (req, res) => {
+//     try {
+//         const cart = await cartModel.findById(req.params.cartId).populate('products.product');
+//         if (!cart) {
+//             return res.status(404).send({ error: 'Carrito no encontrado' });
+//         }
+//         res.render('cart', { cart });
+//     } catch (error) {
+//         console.error('Error al obtener el carrito:', error);
+//         res.status(500).send({ error: 'Error en el servidor' });
+//     }
+// });
 
 // cartRouter.get('/:cartId', authMiddleware, async (req, res) => {
 //     try {
@@ -38,29 +61,29 @@ cartRouter.get('/:cartId', authMiddleware, async (req, res) => {
 //     }
 // });
 
-// Agregar un producto al carrito
-cartRouter.post('/:cartId/products/:productId', authMiddleware, async (req, res) => {
-    try {
-        const { cartId, productId } = req.params;
-        const cart = await cartModel.findById(cartId);
-        if (!cart) return res.status(404).send({ error: 'Carrito no encontrado' });
+// // Agregar un producto al carrito
+// cartRouter.post('/:cartId/products/:productId', authMiddleware, async (req, res) => {
+//     try {
+//         const { cartId, productId } = req.params;
+//         const cart = await cartModel.findById(cartId);
+//         if (!cart) return res.status(404).send({ error: 'Carrito no encontrado' });
 
-        const product = await productModel.findById(productId);
-        if (!product) return res.status(404).send({ error: 'Producto no encontrado' });
+//         const product = await productModel.findById(productId);
+//         if (!product) return res.status(404).send({ error: 'Producto no encontrado' });
 
-        const productInCart = cart.products.find(p => p.product.toString() === productId);
-        if (productInCart) {
-            productInCart.quantity += 1;
-        } else {
-            cart.products.push({ product: productId, quantity: 1 });
-        }
+//         const productInCart = cart.products.find(p => p.product.toString() === productId);
+//         if (productInCart) {
+//             productInCart.quantity += 1;
+//         } else {
+//             cart.products.push({ product: productId, quantity: 1 });
+//         }
 
-        await cart.save();
-        res.status(200).send(cart);
-    } catch (error) {
-        res.status(500).send({ error: 'Error al agregar el producto al carrito (Router)' });
-    }
-});
+//         await cart.save();
+//         res.status(200).send(cart);
+//     } catch (error) {
+//         res.status(500).send({ error: 'Error al agregar el producto al carrito (Router)' });
+//     }
+// });
 
 // Eliminar un producto del carrito
 cartRouter.delete('/:cartId/products/:productId', authMiddleware, async (req, res) => {
@@ -156,18 +179,6 @@ export default cartRouter;
 //     }
 // });
 
-// // Crear un nuevo carrito para un usuario específico
-// routerC.post('/:uid', async (req, res) => {
-//     try {
-//         const userId = req.params.uid;
-//         const cartData = req.body;
-//         const savedCart = await cartDAO.createForUser(userId, cartData);
-//         res.status(201).json({ status: 'success', payload: savedCart });
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(400).json({ status: 'error', message: 'Error al crear el carrito' });
-//     }
-// });
 
 // // Eliminar un producto del carrito
 // routerC.delete('/:cid/products/:pid', async (req, res) => {

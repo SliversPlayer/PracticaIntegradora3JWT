@@ -11,16 +11,16 @@ export default class CartRepositoryImpl extends CartRepository {
         return await Cart.findById(id).populate('products.product');
     }
 
-    async addProductToCart(cartId, productId) {
+    async addProductToCart(cartId, productId, quantity) {
         const cart = await Cart.findById(cartId);
         if (!cart) {
             throw new Error('Cart not found');
         }
         const productIndex = cart.products.findIndex(p => p.product.equals(productId));
         if (productIndex >= 0) {
-            cart.products[productIndex].quantity += 1;
+            cart.products[productIndex].quantity += quantity;
         } else {
-            cart.products.push({ product: productId, quantity: 1 });
+            cart.products.push({ product: productId, quantity });
         }
         return await cart.save();
     }

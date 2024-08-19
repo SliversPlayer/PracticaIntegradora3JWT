@@ -6,39 +6,48 @@ const cartRepository = new CartRepositoryImpl();
 const productRepository = new ProductRepositoryImpl();
 const ticketRepository = new TicketRepository();
 
-export const createCart = async (req, res) => {
+const createCart = async (req, res) => {
   try {
-    const newCart = await cartRepository.createCart();
+    const userId = req.user._id;
+    const user = await userModel.findById(userId).populate('cart');
+    if (user.cart) {
+      return res.status(400).json({ error: 'El usuario ya tiene un carrito asociado.' });
+    }
+
+    const newCart = await cartRepository.createCartForUser(userId);
     res.status(201).json(newCart);
   } catch (error) {
-    res.status(500).json({ error: 'Error creating cart' });
+    res.status(500).json({ error: 'Error creando el carrito.' });
   }
 };
 
-export const getCartById = async (req, res) => {
+const getCartById = async (req, res) => {
   try {
-    const { cid } = req.params;
-    const cart = await cartRepository.getCartById(cid);
+    const userId = req.user._id;
+    const cart = await cartRepository.getCartByUserId(userId);
     if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' });
+      return res.status(404).json({ error: 'Carrito no encontrado.' });
     }
     res.status(200).json(cart);
   } catch (error) {
-    res.status(500).json({ error: 'Error getting cart' });
+    res.status(500).json({ error: 'Error obteniendo el carrito.' });
   }
 };
 
-export const addProductToCart = async (req, res) => {
+const addProductToCart = async (req, res) => {
+  const userId = req.user._id;
+  const { productId } = req.params;
+  const { quantity } = req.body;
+
   try {
-    const { cid, pid } = req.params;
-    const cart = await cartRepository.addProductToCart(cid, pid);
-    res.status(200).json(cart);
+    const updatedCart = await cartRepository.addProductToUserCart(userId, productId, quantity);
+    res.status(200).json(updatedCart);
   } catch (error) {
-    res.status(500).json({ error: 'Error adding product to cart' });
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const removeProductFromCart = async (req, res) => {
+const removeProductFromCart = async (req, res) => {
   try {
     const { cid, pid } = req.params;
     const cart = await cartRepository.removeProductFromCart(cid, pid);
@@ -48,7 +57,7 @@ export const removeProductFromCart = async (req, res) => {
   }
 };
 
-export const updateProductQuantity = async (req, res) => {
+const updateProductQuantity = async (req, res) => {
   try {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
@@ -64,7 +73,7 @@ export const updateProductQuantity = async (req, res) => {
   }
 };
 
-export const clearCart = async (req, res) => {
+const clearCart = async (req, res) => {
   try {
     const { cid } = req.params;
     const cart = await cartRepository.clearCart(cid);
@@ -74,7 +83,7 @@ export const clearCart = async (req, res) => {
   }
 };
 
-export const purchase = async (req, res) => {
+const purchase = async (req, res) => {
   try {
     const cartId = req.params.cid;
     const cart = await cartRepository.getCartById(cartId);
@@ -119,4 +128,15 @@ export const purchase = async (req, res) => {
     console.error(error);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
+};
+
+// Exportar todo como un objeto predeterminado
+export default {
+  createCart,
+  getCartById,
+  addProductToCart,
+  removeProductFromCart,
+  updateProductQuantity,
+  clearCart,
+  purchase
 };

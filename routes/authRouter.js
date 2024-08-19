@@ -49,7 +49,7 @@ authRouter.post('/login', passport.authenticate('login', { failureRedirect: '/fa
 authRouter.get('/current', authMiddleware, async (req, res) => {
     try {
         // Buscar al usuario por email en lugar de por ID
-        const user = await usersModel.findOne({ email: req.user.email }).select('-password');
+        const user = await usersModel.findOne({ _id: req.user._id }).select('-password');
         if (!user) {
             return res.status(404).send({ error: 'Usuario no encontrado' });
         }

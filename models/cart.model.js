@@ -3,21 +3,24 @@ import mongoose from 'mongoose';
 const cartCollection = "carts";
 
 const cartsSchema = new mongoose.Schema({
-    products: {
-        type: [
-            {
-                product: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "Products"
-                },
-                quantity: {
-                    type: Number,
-                    default: 1
-                }
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users",  // Asegúrate de que coincide con el nombre de tu modelo de usuario
+        required: true
+    },
+    products: [
+        {
+            productId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Products",  // Asegúrate de que coincide con el nombre de tu modelo de producto
+            },
+            quantity: {
+                type: Number,
+                required: true,
+                default: 1
             }
-        ],
-        default: []
-    }
+        }
+    ]
 });
 
 const cartModel = mongoose.model(cartCollection, cartsSchema);
