@@ -1,26 +1,129 @@
-import { Router } from 'express';
-import {
-    createCart,
-    getCartById,
-    addProductToCart,
-    removeProductFromCart,
-    updateProductQuantity,
-    clearCart,
-    purchase
-} from '../controllers/cart.controller.js';
-import { isUser } from '../middleware/auth.js';
+import express from 'express';
+import cartModel from '../models/cart.model.js';
+import productModel from '../models/product.model.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 
-const router = Router();
+const cartRouter = express.Router();
 
-router.post('/', createCart);
-router.get('/:cid', getCartById);
-router.post('/:cid/product/:pid', isUser, addProductToCart);
-router.delete('/:cid/product/:pid', removeProductFromCart);
-router.put('/:cid/product/:pid', updateProductQuantity);
-router.delete('/:cid', clearCart);
-router.post('/:cid/purchase', purchase);
+// Crear un carrito (opcional si lo haces al registrar usuario)
+cartRouter.post('/', authMiddleware, async (req, res) => {
+    try {
+        const newCart = await cartModel.create({ products: [] });
+        res.status(201).send(newCart);
+    } catch (error) {
+        res.status(500).send({ error: 'Error al crear el carrito' });
+    }
+});
 
-export default router;
+// Obtener el carrito del usuario
+cartRouter.get('/:cartId', authMiddleware, async (req, res) => {
+    try {
+        //const cart = await cartModel.findById(req.params.cartId).populate('products.product');
+        const cart = await cartModel.findById(req.params.cartId).populate('products.product');
+        if (!cart) return res.status(404).send({ error: 'Carrito no encontrado' });
+        res.render('cart', { cart });
+    } catch (error) {
+        console.error('Error al mostrar el carrito:', error);
+        res.status(500).send({ error: 'Error en el servidor' });
+    }
+});
+
+// cartRouter.get('/:cartId', authMiddleware, async (req, res) => {
+//     try {
+//         const cart = await cartModel.findById(req.params.cartId).populate('products.product');
+//         if (!cart) return res.status(404).send({ error: 'Carrito no encontrado' });
+//         res.status(200).send(cart);
+//     } catch (error) {
+//         res.status(500).send({ error: 'Error al obtener el carrito' });
+//     }
+// });
+
+// Agregar un producto al carrito
+cartRouter.post('/:cartId/products/:productId', authMiddleware, async (req, res) => {
+    try {
+        const { cartId, productId } = req.params;
+        const cart = await cartModel.findById(cartId);
+        if (!cart) return res.status(404).send({ error: 'Carrito no encontrado' });
+
+        const product = await productModel.findById(productId);
+        if (!product) return res.status(404).send({ error: 'Producto no encontrado' });
+
+        const productInCart = cart.products.find(p => p.product.toString() === productId);
+        if (productInCart) {
+            productInCart.quantity += 1;
+        } else {
+            cart.products.push({ product: productId, quantity: 1 });
+        }
+
+        await cart.save();
+        res.status(200).send(cart);
+    } catch (error) {
+        res.status(500).send({ error: 'Error al agregar el producto al carrito (Router)' });
+    }
+});
+
+// Eliminar un producto del carrito
+cartRouter.delete('/:cartId/products/:productId', authMiddleware, async (req, res) => {
+    try {
+        const { cartId, productId } = req.params;
+        const cart = await cartModel.findById(cartId);
+        if (!cart) return res.status(404).send({ error: 'Carrito no encontrado' });
+
+        cart.products = cart.products.filter(p => p.product.toString() !== productId);
+
+        await cart.save();
+        res.status(200).send(cart);
+    } catch (error) {
+        res.status(500).send({ error: 'Error al eliminar el producto del carrito' });
+    }
+});
+
+// Vaciar el carrito
+cartRouter.delete('/:cartId', authMiddleware, async (req, res) => {
+    try {
+        const { cartId } = req.params;
+        const cart = await cartModel.findById(cartId);
+        if (!cart) return res.status(404).send({ error: 'Carrito no encontrado' });
+
+        cart.products = [];
+
+        await cart.save();
+        res.status(200).send(cart);
+    } catch (error) {
+        res.status(500).send({ error: 'Error al vaciar el carrito' });
+    }
+});
+
+export default cartRouter;
+
+
+// VERSION 2
+
+// import { Router } from 'express';
+// import {
+//     createCart,
+//     getCartById,
+//     addProductToCart,
+//     removeProductFromCart,
+//     updateProductQuantity,
+//     clearCart,
+//     purchase
+// } from '../controllers/cart.controller.js';
+// import { isUser } from '../middleware/auth.js';
+
+// const router = Router();
+
+// router.post('/', createCart);
+// router.get('/:cid', getCartById);
+// router.post('/:cid/product/:pid', isUser, addProductToCart);
+// router.delete('/:cid/product/:pid', removeProductFromCart);
+// router.put('/:cid/product/:pid', updateProductQuantity);
+// router.delete('/:cid', clearCart);
+// router.post('/:cid/purchase', purchase);
+
+// export default router;
+
+// VERSION 1
 
 // import { Router } from 'express';
 // import cartDAO from '../dao/cart.dao.js';

@@ -1,7 +1,15 @@
 <div class="container mt-5">
-    <div class="text-center mb-3"> <!-- Contenedor para centrar horizontalmente -->
+    <div class="text-center mb-3">
         <h1>Productos</h1>
     </div>
+
+    <!-- Botón para ver el carrito -->
+    <div class="row mb-3">
+        <div class="col-md-auto">
+            <a href="/api/carts/{{user.cartId}}" class="btn btn-success">Ver Carrito</a>
+        </div>
+    </div>
+
     <!-- Formulario de búsqueda por categoría, límite y ordenamiento de productos -->
     <div class="row mb-3">
         <!-- Columna para el formulario de búsqueda por categoría -->
@@ -139,3 +147,29 @@
 </div>
 
 <script src="../public/js/defaultPage.js"></script>
+<script>
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', async () => {
+            const productId = button.getAttribute('data-id');
+            const cartId = '{{user.cartId}}'; // Si tienes el cartId asociado al usuario logueado
+
+            try {
+                const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Producto agregado al carrito');
+                } else {
+                    alert('Error al agregar el producto al carrito');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al agregar el producto al carrito');
+            }
+        });
+    });
+</script>

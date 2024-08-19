@@ -24,6 +24,7 @@ authRouter.post('/login', passport.authenticate('login', { failureRedirect: '/fa
 
         // Generar el token JWT
         const token = jwt.sign({
+            _id: req.user._id,
             first_name: req.user.first_name,
             last_name: req.user.last_name,
             email: req.user.email,
@@ -44,6 +45,7 @@ authRouter.post('/login', passport.authenticate('login', { failureRedirect: '/fa
 });
 
 // Ruta para obtener el perfil del usuario
+
 authRouter.get('/current', authMiddleware, async (req, res) => {
     try {
         // Buscar al usuario por email en lugar de por ID
@@ -52,16 +54,14 @@ authRouter.get('/current', authMiddleware, async (req, res) => {
             return res.status(404).send({ error: 'Usuario no encontrado' });
         }
         console.log('User object:', user); // Verifica el objeto `user` aquí
-
         const userData = {
+            _id: user._id,
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
             age: user.age,
             role: user.role,
-            // Cualquier otra propiedad que necesites
         };
-
         res.render('current', { user:userData });
     } catch (error) {
         console.error('Error en /current:', error);
@@ -96,38 +96,3 @@ authRouter.post('/logout', (req, res) => {
 });
 
 export default authRouter;
-
-
-
-// import express from 'express';
-// import passport from 'passport';
-// import { generateAuthToken } from '../services/authService.js';
-// import authMiddleware from '../middleware/authMiddleware.js';
-
-// const authRouter = express.Router();
-
-// authRouter.post('/login', (req, res, next) => {
-//     passport.authenticate('login', (err, user, info) => {
-//         if (err || !user) {
-//             return res.status(400).json({ message: 'Error de autenticación' });
-//         }
-//         const token = generateAuthToken(user);
-//         res.cookie('authToken', token, { httpOnly: true });
-//         res.json({ token });
-//     })(req, res, next);
-// });
-
-// authRouter.get('/current', authMiddleware, async (req, res) => {
-//     try {
-//         const user = await usersModel.findById(req.user._id).select('-password');
-//         if (!user) {
-//             return res.status(404).send({ error: 'Usuario no encontrado' });
-//         }
-//         res.render('current', { user });
-//     } catch (error) {
-//         res.status(500).send({ error: 'Error en el servidor' });
-//     }
-// });
-
-// export default authRouter;
-
