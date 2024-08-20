@@ -1,5 +1,9 @@
 import CartDAO from '../dao/cart.dao.js';
 import productModel from '../models/product.model.js';
+import userModel from '../models/user.model.js';
+import cartRepository from '../repositories/cart.repository.js';
+
+//El controlador maneja la lógica para agregar productos al carrito:
 
 export const getCart = async (req, res) => {
   try {
@@ -7,33 +11,50 @@ export const getCart = async (req, res) => {
     console.log(userId);
     const user = await userModel.findById(userId).populate('cart');
     if (user.cart) {
-      return res.status(400).json({ error: 'El usuario ya tiene un carrito asociado.' });
+      return res.render('cart', { cart: user.cart.toObject() });
     }
-
     const newCart = await cartRepository.createCartForUser(userId); // Crea el carrito y lo asocia al usuario
     res.status(201).json(newCart);
   } catch (error) {
     res.status(500).json({ error: 'Error creando el carrito.' });
   }
 };
-
 export const addProductToCart = async (req, res) => {
-    try {
-        const userId = req.user._id;
-        const { productId, quantity } = req.body;
+  try {
+      const { cartId, productId } = req.params;
+      const { quantity } = req.body;
 
-        // Verifica si el producto existe
-        const product = await productModel.findById(productId);
-        if (!product) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
-        }
+      // Verifica si el producto existe
+      const product = await productModel.findById(productId);
+      if (!product) {
+          return res.status(404).json({ error: 'Producto no encontrado' });
+      }
 
-        const cart = await CartDAO.addProductToCart(userId, productId, quantity);
-        res.status(200).json(cart);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al agregar producto al carrito', error });
-    }
+      // Agrega el producto al carrito
+      await cartRepository.addProductToCart(cartId, productId, quantity);
+
+      res.status(200).json({ message: 'Producto agregado al carrito' });
+  } catch (error) {
+      res.status(500).json({ error: 'Error al agregar producto al carrito' });
+  }
 };
+// export const addProductToCart = async (req, res) => {
+//     try {
+//         const userId = req.user._id;
+//         const { productId, quantity } = req.body;
+
+//         // Verifica si el producto existe
+//         const product = await productModel.findById(productId);
+//         if (!product) {
+//             return res.status(404).json({ message: 'Producto no encontrado' });
+//         }
+
+//         const cart = await CartDAO.addProductToCart(userId, productId, quantity);
+//         res.status(200).json(cart);
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error al agregar producto al carrito', error });
+//     }
+// };
 
 export const removeProductFromCart = async (req, res) => {
     try {
