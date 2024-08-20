@@ -147,29 +147,4 @@
 </div>
 
 <script src="../public/js/defaultPage.js"></script>
-<script>
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', async () => {
-            const productId = button.getAttribute('data-id');
-            const cartId = '{{user.cartId}}'; // Si tienes el cartId asociado al usuario logueado
-
-            try {
-                const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    alert('Producto agregado al carrito');
-                } else {
-                    alert('Error al agregar el producto al carrito');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al agregar el producto al carrito');
-            }
-        });
-    });
-</script>
+<script src="../public/js/cart.js"></script>

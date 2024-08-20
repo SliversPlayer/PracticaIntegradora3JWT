@@ -71,7 +71,7 @@ authRouter.get('/current', authMiddleware, async (req, res) => {
 
 // Ruta para el registro de usuarios
 authRouter.post('/register', passport.authenticate('register', { failureRedirect: '/failregister', session: false }), async (req, res) => {
-    res.send({ status: "success", message: "Usuario Registrado" });
+    res.redirect('/login');
 });
 
 // Ruta para manejar fallo en registro

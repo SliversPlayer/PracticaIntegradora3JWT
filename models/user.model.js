@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import cartModel from './cart.model.js'; // Import the cart model
 
 const userCollection = "Users";
 
@@ -16,8 +17,8 @@ userSchema.pre('save', async function (next) {
     // Verifica si el usuario ya tiene un carrito asignado
     if (!this.cart) {
         try {
-            // Crea un nuevo carrito vacío
-            const newCart = await Cart.create({});
+            // Crea un nuevo carrito vacío con el ID del usuario
+            const newCart = await cartModel.create({ user: this._id });
             // Asigna el ID del carrito al usuario
             this.cart = newCart._id;
             next();
@@ -29,13 +30,6 @@ userSchema.pre('save', async function (next) {
         next();
     }
 });
-userSchema.pre('save', async function (next) {
-    const user = this
-    if (user.isModified('password') && user.password) {
-        user.password = await bcrypt.hash(user.password, 10)
-    }
-    next()
-})
 
 const User = mongoose.model(userCollection, userSchema);
 
