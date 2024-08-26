@@ -16,6 +16,9 @@ import viewsRouter from '../src/routes/views.router.js';
 import socketProducts from './listener/socketProducts.js';
 import authRouter from './routes/authRouter.js'; // Importa el router de autenticación JWT
 import mockingRouter from './routes/mocking.router.js';
+//Helpers
+import { multiply } from './utils/helpers.js'; // Import the multiply helper
+
 
 // Cargar variables de entorno
 dotenv.config();
@@ -35,8 +38,14 @@ mongoose.connect(conString, {
 // Configuración de archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname + "/src/public"));
-// Configuración de Handlebars
-app.engine('handlebars', handlebars.engine());
+
+// Configure Handlebars with external helper
+const hbs = handlebars.create({
+    helpers: {
+        multiply // Register the multiply helper
+    }
+});
+app.engine('handlebars', hbs.engine);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
 // Middleware

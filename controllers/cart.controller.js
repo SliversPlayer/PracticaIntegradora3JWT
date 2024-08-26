@@ -21,40 +21,26 @@ export const getCart = async (req, res) => {
 };
 export const addProductToCart = async (req, res) => {
   try {
-      const { cartId, productId } = req.params;
-      const { quantity } = req.body;
+    const { productId } = req.body;
+    let cart = await Cart.findOne({ user: req.userId });
 
-      // Verifica si el producto existe
-      const product = await productModel.findById(productId);
-      if (!product) {
-          return res.status(404).json({ error: 'Producto no encontrado' });
-      }
+    if (!cart) {
+        cart = new Cart({ user: req.userId, products: [] });
+    }
 
-      // Agrega el producto al carrito
-      await cartRepository.addProductToCart(cartId, productId, quantity);
+    const productIndex = cart.products.findIndex(p => p.productId.toString() === productId);
+    if (productIndex > -1) {
+        cart.products[productIndex].quantity += 1;
+    } else {
+        cart.products.push({ productId });
+    }
 
-      res.status(200).json({ message: 'Producto agregado al carrito' });
-  } catch (error) {
-      res.status(500).json({ error: 'Error al agregar producto al carrito' });
-  }
+    await cart.save();
+    res.status(200).json(cart);
+} catch (error) {
+    res.status(500).json({ error: 'Failed to add to cart' });
+}
 };
-// export const addProductToCart = async (req, res) => {
-//     try {
-//         const userId = req.user._id;
-//         const { productId, quantity } = req.body;
-
-//         // Verifica si el producto existe
-//         const product = await productModel.findById(productId);
-//         if (!product) {
-//             return res.status(404).json({ message: 'Producto no encontrado' });
-//         }
-
-//         const cart = await CartDAO.addProductToCart(userId, productId, quantity);
-//         res.status(200).json(cart);
-//     } catch (error) {
-//         res.status(500).json({ message: 'Error al agregar producto al carrito', error });
-//     }
-// };
 
 export const removeProductFromCart = async (req, res) => {
     try {

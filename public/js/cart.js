@@ -4,7 +4,7 @@ async function loadCart() {
         const response = await fetch('/api/cart', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}` // Suponiendo que el token JWT se almacena en localStorage
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
         });
 
@@ -50,7 +50,7 @@ async function addToCart(productId, quantity = 1) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             },
             body: JSON.stringify({ productId, quantity })
         });
@@ -71,7 +71,7 @@ async function removeFromCart(productId) {
         const response = await fetch(`/api/cart/remove/${productId}`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
         });
 
@@ -91,7 +91,7 @@ async function clearCart() {
         const response = await fetch('/api/cart/clear', {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
         });
 

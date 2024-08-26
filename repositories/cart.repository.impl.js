@@ -13,17 +13,22 @@ export default class CartRepositoryImpl extends CartRepository {
     }
 
     async addProductToCart(cartId, productId, quantity) {
-        const cart = await Cart.findById(cartId);
+        const cart = await CartDAO.findById(cartId);
         if (!cart) {
-            throw new Error('Cart not found');
+            throw new Error('Carrito no encontrado');
         }
-        const productIndex = cart.products.findIndex(p => p.product.equals(productId));
-        if (productIndex >= 0) {
+
+        const productIndex = cart.products.findIndex(p => p.productId.toString() === productId);
+        if (productIndex > -1) {
             cart.products[productIndex].quantity += quantity;
+            console.log(`Updated quantity of product ${productId} to ${cart.products[productIndex].quantity}`);
         } else {
-            cart.products.push({ product: productId, quantity });
+            cart.products.push({ productId, quantity });
+            console.log(`Added product ${productId} with quantity ${quantity} to cart`);
         }
-        return await cart.save();
+
+        await cart.save();
+        console.log(`Cart ${cartId} saved successfully`);
     }
 
     async removeProductFromCart(cartId, productId) {

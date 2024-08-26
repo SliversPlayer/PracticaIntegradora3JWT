@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', authMiddleware, getCart);
 
 // Ruta para agregar un producto al carrito
-router.post('/carts/:cartId/products/:productId', addProductToCart);
+router.post('/', authMiddleware, addProductToCart);
 
 // Ruta para eliminar un producto del carrito
 router.delete('/remove/:productId', authMiddleware, removeProductFromCart);

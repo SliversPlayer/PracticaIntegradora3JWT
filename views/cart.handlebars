@@ -6,7 +6,9 @@
                 <h3>{{this.productId.title}}</h3>
                 <p>Quantity: {{this.quantity}}</p>
                 <p>Price: ${{this.productId.price}}</p>
-                <p>Total: ${{multiply this.quantity this.productId.price}}</p>
+                <p>Total: ${{multiply this.quantity this.productId.price}}
+                <p>Total: ${{this.productId.price}}</p>
+
                 <form action="/api/carts/{{cart._id}}/products/{{this.productId._id}}?_method=DELETE" method="POST">
                     <button type="submit" class="btn btn-danger">Eliminar del Carrito</button>
                 </form>
