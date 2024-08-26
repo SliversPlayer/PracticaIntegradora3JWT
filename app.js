@@ -18,7 +18,7 @@ import authRouter from './routes/authRouter.js'; // Importa el router de autenti
 import mockingRouter from './routes/mocking.router.js';
 //Helpers
 import { multiply } from './utils/helpers.js'; // Import the multiply helper
-
+//TEST
 
 // Cargar variables de entorno
 dotenv.config();
