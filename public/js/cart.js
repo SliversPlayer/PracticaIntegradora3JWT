@@ -46,15 +46,17 @@ function renderCart(cart) {
 // Agregar un producto al carrito
 async function addToCart(productId, quantity = 1) {
     try {
+        
         const response = await fetch('/api/cart/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             },
-            body: JSON.stringify({ productId, quantity })
-        });
+            body: JSON.stringify({ productId, quantity }),
 
+        });
+        console.log(productId, quantity);
         if (response.ok) {
             loadCart(); // Recargar el carrito después de añadir un producto
         } else {

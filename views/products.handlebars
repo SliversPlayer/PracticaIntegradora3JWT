@@ -72,7 +72,7 @@
                         <li><i class="bi bi-box"></i> Stock: {{this.stock}}</li>
                     </ul>
                     <!-- Botón Agregar al Carro -->
-                    <button class="btn btn-primary add-to-cart" data-id="{{this.id}}">
+                    <button class="btn btn-primary add-to-cart" onclick="addToCart('{{this.id}}')">
                         Agregar al Carro
                     </button>
                     <!-- Botón Ver Detalles -->
@@ -147,4 +147,4 @@
 </div>
 
 <script src="../public/js/defaultPage.js"></script>
-<script src="../public/js/cart.js"></script>
+<script src="/js/cart.js"></script>

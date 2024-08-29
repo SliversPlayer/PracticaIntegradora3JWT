@@ -37,9 +37,9 @@ import productDAO from "../dao/product.dao.js";
 
 export const addProduct = async (req, res) => {
     try {
-      const { title, description, category, price, thumbnail, code, stock, status } = req.body;
+      const { title, description, category, price, code, stock} = req.body;
   
-      if (!title || !description || !category || !price || !thumbnail || !code || !stock || !status) {
+      if (!title || !description || !category || !price || !code || !stock) {
         return res.status(400).json({ status: "error", error: "Faltan parámetros obligatorios" });
       }
   

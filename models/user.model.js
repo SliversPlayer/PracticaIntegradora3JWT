@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import cartModel from './cart.model.js'; // Import the cart model
+import cartModel from './cart.model.js';
 
 const userCollection = "users";
 
@@ -14,19 +14,15 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function (next) {
-    // Verifica si el usuario ya tiene un carrito asignado
     if (!this.cart) {
         try {
-            // Crea un nuevo carrito vacío con el ID del usuario
             const newCart = await cartModel.create({ user: this._id });
-            // Asigna el ID del carrito al usuario
             this.cart = newCart._id;
             next();
         } catch (err) {
             next(err);
         }
     } else {
-        // Si el usuario ya tiene un carrito, pasa al siguiente middleware
         next();
     }
 });
