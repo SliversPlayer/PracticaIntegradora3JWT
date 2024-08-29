@@ -17,7 +17,7 @@ import socketProducts from './listener/socketProducts.js';
 import authRouter from './routes/authRouter.js'; // Importa el router de autenticación JWT
 import mockingRouter from './routes/mocking.router.js';
 //Helpers
-import { multiply } from './utils/helpers.js'; // Import the multiply helper
+import { multiply, formatPrice} from './utils/helpers.js'; // Import the multiply helper
 //TEST
 
 // Cargar variables de entorno
@@ -42,7 +42,8 @@ app.use(express.static(__dirname + "/src/public"));
 // Configure Handlebars with external helper
 const hbs = handlebars.create({
     helpers: {
-        multiply // Register the multiply helper
+        multiply, // Register the multiply helper
+        formatPrice
     }
 });
 app.engine('handlebars', hbs.engine);

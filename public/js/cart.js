@@ -1,10 +1,3 @@
-// Función para obtener el valor de una cookie por su nombre
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
 // Obtener el carrito actual del usuario
 async function loadCart() {
     try {
@@ -13,7 +6,7 @@ async function loadCart() {
         const response = await fetch('/api/carts', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${authToken}`
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
         });
 
@@ -96,8 +89,9 @@ async function removeFromCart(productId) {
         const response = await fetch(`/api/carts/remove/${productId}`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-            }
+            },
         });
 
         console.log("Respuesta del servidor al eliminar producto del carrito:", response);
@@ -123,8 +117,9 @@ async function clearCart() {
         const response = await fetch('/api/carts/clear', {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-            }
+            },
         });
 
         console.log("Respuesta del servidor al vaciar el carrito:", response);

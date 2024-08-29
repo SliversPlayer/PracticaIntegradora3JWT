@@ -4,34 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ product.title }} - Detalles del Producto</title>
-    <link rel="stylesheet" href="../public/css/styles.css">
-
-    </head>
-    <body>
-        <div class="container product-details">
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <h1 class="product-title text-center">{{ product.title }}</h1>
-                    <div class="product-info">
-                        <p><strong>Descripción:</strong> {{ product.description }}</p>
-                        <p><strong>Precio:</strong> ${{ product.price }}</p>
-                        <p><strong>Categoría:</strong> {{ product.category }}</p>
-                        <p><strong>Código:</strong> {{ product.code }}</p>
-                        <p><strong>Stock:</strong> {{ product.stock }}</p>
-                    </div>
-                    <!-- Formulario para agregar al carrito -->
-                    <form action="/api/carts/{{ cartId }}/products/{{ product._id }}" method="POST">
-                        <!-- Input oculto para enviar la cantidad -->
-                        <input type="hidden" name="quantity" value="1">
-                        <!-- Botón para agregar al carrito -->
-                        <button type="submit" class="btn btn-primary">Agregar al Carrito</button>
-                    </form>
-                    </div>
-                    <!-- Enlaces de navegación u otros elementos adicionales pueden ir aquí -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container product-details mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h1 class="product-title text-center">{{ product.title }}</h1>
+                <div class="product-info">
+                    <p><strong>Descripción:</strong> {{ product.description }}</p>
+                    <p><strong>Precio:</strong> ${{ product.price }}</p>
+                    <p><strong>Categoría:</strong> {{ product.category }}</p>
+                    <p><strong>Código:</strong> {{ product.code }}</p>
+                    <p><strong>Stock:</strong> {{ product.stock }}</p>
                 </div>
+                <!-- Formulario para agregar al carrito -->
+                <form action="/api/carts/{{ cartId }}/products/{{ product._id }}" method="POST">
+                    <!-- Input oculto para enviar la cantidad -->
+                    <input type="hidden" name="quantity" value="1">
+                    <!-- Botón para agregar al carrito -->
+                    <button type="submit" class="btn btn-primary">Agregar al Carrito</button>
+                </form>
             </div>
         </div>
-    </body>
-    </html>
-
-http://localhost:8080/api/carts//products/664c2e64ff6c5bfd8a955bce
+    </div>
+</body>
+</html>

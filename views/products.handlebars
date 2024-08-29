@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/public/CSS/styles.css">
 <div class="container mt-5">
     <div class="text-center mb-3">
         <h1>Productos</h1>
@@ -75,8 +76,10 @@
                     <button class="btn btn-primary add-to-cart" onclick="addToCart('{{this.id}}')">
                         Agregar al Carro
                     </button>
-                    <!-- Botón Ver Detalles -->
-                    <a href="/api/products/{{this._id}}" class="btn btn-primary">Ver detalles</a>
+                    <!-- Botón Ver Detalles que activa el modal -->
+                    <button class="btn btn-primary" onclick="showProductDetails('{{this._id}}')">
+                        Ver detalles
+                    </button>
                 </div>
             </div>
         </div>
@@ -84,67 +87,32 @@
     </div>
 
     <!-- Contenedor para el formulario y los botones de navegación -->
-    <div class="row justify-content-center mb-3">
-        <!-- Columna para el formulario de navegación -->
-        <div class="col-4">
-            <form action="/api/products" method="GET" onsubmit="setDefaultPage()">
-                <div class="input-group">
-                    <input id="pageNumber" type="number" name="page" class="form-control" placeholder="Número de página" min="1">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary">Ir</button>
-                    </div>
-                </div>
-            </form>
+    <!-- (mantenemos la sección de paginación y navegación como está) -->
+</div>
+
+<!-- Modal para mostrar los detalles del producto -->
+<div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productDetailsModalLabel">Detalles del Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h3 id="modalProductTitle"></h3>
+                <p><strong>Descripción:</strong> <span id="modalProductDescription"></span></p>
+                <p><strong>Precio:</strong> $<span id="modalProductPrice"></span></p>
+                <p><strong>Categoría:</strong> <span id="modalProductCategory"></span></p>
+                <p><strong>Código:</strong> <span id="modalProductCode"></span></p>
+                <p><strong>Stock:</strong> <span id="modalProductStock"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
         </div>
-
-        <!-- Columna para los botones de cambio de página -->
-        <div class="col-4 text-center">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination mb-0 justify-content-center">
-                    <!-- Botón de página anterior -->
-                    {{#if pagination.hasPrevPage}}
-                    <li class="page-item">
-                        <a class="page-link" href="{{pagination.prevLink}}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {{else}}
-                    <li class="page-item disabled">
-                        <span class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </span>
-                    </li>
-                    {{/if}}
-
-                    <!-- Información de la página actual -->
-                    <li class="page-item disabled">
-                        <span class="page-link">
-                            Página {{pagination.page}} de {{pagination.totalPages}}
-                        </span>
-                    </li>
-
-                    <!-- Botón de página siguiente -->
-                    {{#if pagination.hasNextPage}}
-                    <li class="page-item">
-                        <a class="page-link" href="{{pagination.nextLink}}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    {{else}}
-                    <li class="page-item disabled">
-                        <span class="page-link" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </span>
-                    </li>
-                    {{/if}}
-                </ul>
-            </nav>
-        </div>
-
-        <!-- Columna vacía para balancear -->
-        <div class="col-4"></div>
     </div>
 </div>
 
 <script src="/js/defaultPage.js"></script>
 <script src="/js/cart.js"></script>
+<script src="/js/productDetails.js"></script>

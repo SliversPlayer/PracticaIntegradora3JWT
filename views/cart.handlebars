@@ -1,27 +1,41 @@
 <div class="container mt-5">
-    <h1>Tu Carrito de Compras</h1>
+    <h1 class="mb-4 text-center">Tu Carrito de Compras</h1>
+    
     {{#if cart.products.length}}
-        {{#each cart.products}}
-            <div class="product-item">
-                <p>{{log this}}</p> <!-- Debugging output -->
-                <p>{{log this.productId}}</p> <!-- Debugging output -->
-                <p>{{log this.productId.title}}</p>
-                <p>Product ID: {{this.productId._id}}</p>
-                <p>Quantity: {{this.quantity}}</p>
-                <p>Price: ${{this.productId.price}}</p>
-                <p>Total: ${{multiply this.quantity this.productId.price}}</p>
-                <!-- Verificar que cart._id y this.productId._id están correctamente formateados -->
-                <form action="/api/carts/{{../cart._id}}/products/{{this.productId._id}}?_method=DELETE" method="POST">
-                    <button type="submit" class="btn btn-danger">Eliminar del Carrito</button>
-                </form>
-            </div>
-        {{/each}}
+        <div class="row">
+            {{#each cart.products}}
+                <div class="col-12 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <!-- Información del producto -->
+                            <div>
+                                <h5 class="card-title">{{this.productId.title}}</h5>
+                                <p class="mb-1">Cantidad: <strong>{{this.quantity}}</strong></p>
+                            </div>
+                            <!-- Precio, total y botón de eliminación alineados a la derecha -->
+                            <div class="text-right">
+                                <p class="mb-1">Precio: <strong>${{this.productId.price}}</strong></p>
+                                <p class="mb-1">Total: <strong>${{formatPrice (multiply this.quantity this.productId.price)}}</strong></p>
+                                    <button class="btn btn-danger btn-sm" onclick="removeFromCart('{{this.id}}')">
+                                        Eliminar
+                                    </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
     {{else}}
-        <p>No hay productos en tu carrito.</p>
+        <p class="text-center">No hay productos en tu carrito.</p>
     {{/if}}
-    <form action="/api/carts/{{cart._id}}?_method=DELETE" method="POST">
-        <button type="submit" class="btn btn-warning">Vaciar Carrito</button>
-    </form>
-</div>
-<script src="/js/cart.js"></script>
 
+    <!-- Botones para vaciar el carrito y volver a productos -->
+    <div class="d-flex justify-content-between mt-4">
+        
+            <button class="btn btn-warning" onclick="clearCart()">Vaciar Carrito</button>
+        
+        <a href="/api/products" class="btn btn-primary">Volver a Productos</a>
+    </div>
+</div>
+
+<script src="/js/cart.js"></script>

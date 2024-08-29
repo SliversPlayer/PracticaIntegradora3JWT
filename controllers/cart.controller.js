@@ -1,24 +1,36 @@
 import CartDAO from '../dao/cart.dao.js';
-import productModel from '../models/product.model.js';
 import userModel from '../models/user.model.js';
 import cartRepository from '../repositories/cart.repository.js';
-
-//El controlador maneja la lógica para agregar productos al carrito:
 
 export const getCart = async (req, res) => {
   try {
     const userId = req.user._id; // Obtiene el ID del usuario logueado
-    console.log(userId);
-    const user = await userModel.findById(userId).populate('cart');
+    console.log(`User ID: ${userId}`);
+
+    // Obtener el carrito del usuario poblado con los productos
+    const user = await userModel.findById(userId).populate({
+      path: 'cart',
+      populate: {
+        path: 'products.productId',
+        model: 'products', // Asegura que coincide con el nombre del modelo
+        select: 'title price', // Selecciona solo los campos necesarios del producto
+      },
+    });
+
     if (user.cart) {
+      // Renderiza la vista del carrito con los productos poblados
       return res.render('cart', { cart: user.cart.toObject() });
     }
-    const newCart = await cartRepository.createCartForUser(userId); // Crea el carrito y lo asocia al usuario
+
+    // Crea el carrito y lo asocia al usuario si no existe
+    const newCart = await cartRepository.createCartForUser(userId);
     res.status(201).json(newCart);
   } catch (error) {
-    res.status(500).json({ error: 'Error creando el carrito.' });
+    console.error('Error al obtener el carrito:', error);
+    res.status(500).json({ error: 'Error obteniendo el carrito.' });
   }
 };
+
 export const addProductToCart = async (req, res) => {
   try {
       const { productId, quantity } = req.body;
