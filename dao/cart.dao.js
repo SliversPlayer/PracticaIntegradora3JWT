@@ -1,11 +1,14 @@
 import cartModel from '../models/cart.model.js';
+import userModel from '../models/user.model.js'; // Asegúrate de tener este import
+import logger from '../utils/logger.js'; // Asegúrate de que tu logger está correctamente configurado
+import errorMessages from '../utils/errorMessages.js';; // Asegúrate de que tienes un archivo de constantes para los mensajes de error
 
 class CartDAO {
     async createCartForUser(userId) {
         try {
-            const newCart = new cartModel({ user: userId, products: [] }); // Crea un nuevo carrito con el userId
-            const savedCart = await newCart.save(); // Guarda el carrito en la base de datos
-            await userModel.findByIdAndUpdate(userId, { cart: savedCart._id }); // Actualiza el usuario con el ID del carrito
+            const newCart = new cartModel({ user: userId, products: [] });
+            const savedCart = await newCart.save();
+            await userModel.findByIdAndUpdate(userId, { cart: savedCart._id });
             logger.info(`Carrito creado para el usuario ${userId}`);
             return savedCart;
         } catch (error) {
@@ -13,40 +16,85 @@ class CartDAO {
             throw new Error(errorMessages.CART_CREATION_FAILED);
         }
     }
+
     async getCartByUserId(userId) {
-        return await cartModel.findOne({ user: userId }).populate('products.productId');
+        try {
+            const cart = await cartModel.findOne({ user: userId }).populate('products.productId');
+            if (!cart) {
+                logger.warn(`Carrito no encontrado para el usuario ${userId}`);
+            }
+            return cart;
+        } catch (error) {
+            logger.error(`Error al obtener el carrito para el usuario ${userId}: ${error.message}`);
+            throw new Error(`Error al obtener el carrito para el usuario ${userId}`);
+        }
     }
 
     async addProductToCart(userId, productId, quantity = 1) {
-        const cart = await this.getCartByUserId(userId);
-        const productIndex = cart.products.findIndex(p => p.productId.equals(productId));
+        try {
+            let cart = await this.getCartByUserId(userId);
+            
+            if (!cart) {
+                logger.info(`Carrito no encontrado para el usuario ${userId}, creando un nuevo carrito.`);
+                cart = await this.createCartForUser(userId);
+            }
 
-        if (productIndex > -1) {
-            // Si el producto ya está en el carrito, aumenta la cantidad
-            cart.products[productIndex].quantity += quantity;
-        } else {
-            // Si el producto no está en el carrito, añádelo
-            cart.products.push({ productId, quantity });
+            const productIndex = cart.products.findIndex(p => p.productId.equals(productId));
+
+            if (productIndex > -1) {
+                logger.info(`Producto ${productId} ya existe en el carrito, aumentando cantidad.`);
+                cart.products[productIndex].quantity += quantity;
+            } else {
+                logger.info(`Añadiendo nuevo producto ${productId} al carrito.`);
+                cart.products.push({ productId, quantity });
+            }
+
+            await cart.save();
+            logger.info(`Producto ${productId} agregado al carrito del usuario ${userId}.`);
+            return cart;
+        } catch (error) {
+            logger.error(`Error al agregar producto al carrito: ${error.message}`);
+            throw new Error('Error al agregar producto al carrito');
         }
-
-        await cart.save();
-        return cart;
     }
 
     async removeProductFromCart(userId, productId) {
-        const cart = await this.getCartByUserId(userId);
-        cart.products = cart.products.filter(p => !p.productId.equals(productId));
+        try {
+            const cart = await this.getCartByUserId(userId);
 
-        await cart.save();
-        return cart;
+            if (!cart) {
+                logger.warn(`Carrito no encontrado para el usuario ${userId} al intentar eliminar un producto.`);
+                throw new Error(`Carrito no encontrado para el usuario ${userId}`);
+            }
+
+            cart.products = cart.products.filter(p => !p.productId.equals(productId));
+
+            await cart.save();
+            logger.info(`Producto ${productId} eliminado del carrito del usuario ${userId}.`);
+            return cart;
+        } catch (error) {
+            logger.error(`Error al eliminar producto del carrito: ${error.message}`);
+            throw new Error('Error al eliminar producto del carrito');
+        }
     }
 
     async clearCart(userId) {
-        const cart = await this.getCartByUserId(userId);
-        cart.products = [];
+        try {
+            const cart = await this.getCartByUserId(userId);
 
-        await cart.save();
-        return cart;
+            if (!cart) {
+                logger.warn(`Carrito no encontrado para el usuario ${userId} al intentar vaciarlo.`);
+                throw new Error(`Carrito no encontrado para el usuario ${userId}`);
+            }
+
+            cart.products = [];
+            await cart.save();
+            logger.info(`Carrito del usuario ${userId} vaciado.`);
+            return cart;
+        } catch (error) {
+            logger.error(`Error al vaciar el carrito: ${error.message}`);
+            throw new Error('Error al vaciar el carrito');
+        }
     }
 }
 

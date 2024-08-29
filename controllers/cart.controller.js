@@ -21,26 +21,17 @@ export const getCart = async (req, res) => {
 };
 export const addProductToCart = async (req, res) => {
   try {
-    const { productId } = req.body;
-    let cart = await Cart.findOne({ user: req.userId });
-
-    if (!cart) {
-        cart = new Cart({ user: req.userId, products: [] });
-    }
-
-    const productIndex = cart.products.findIndex(p => p.productId.toString() === productId);
-    if (productIndex > -1) {
-        cart.products[productIndex].quantity += 1;
-    } else {
-        cart.products.push({ productId });
-    }
-
-    await cart.save();
-    res.status(200).json(cart);
-} catch (error) {
-    res.status(500).json({ error: 'Failed to add to cart' });
-}
+      const { productId, quantity } = req.body;
+      const userId = req.user._id; // Corregido para obtener el ID del usuario desde req.user
+      console.log('Agregando producto al carrito:', { userId, productId, quantity });
+      const result = await CartDAO.addProductToCart(userId, productId, quantity);
+      res.status(200).json(result);
+  } catch (error) {
+      console.error('Error al agregar producto al carrito:', error);
+      res.status(500).json({ message: 'Error al agregar producto al carrito' });
+  }
 };
+
 
 export const removeProductFromCart = async (req, res) => {
     try {

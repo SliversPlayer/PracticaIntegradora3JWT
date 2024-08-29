@@ -3,13 +3,15 @@
     {{#if cart.products.length}}
         {{#each cart.products}}
             <div class="product-item">
-                <h3>{{this.productId.title}}</h3>
+                <p>{{log this}}</p> <!-- Debugging output -->
+                <p>{{log this.productId}}</p> <!-- Debugging output -->
+                <p>{{log this.productId.title}}</p>
+                <p>Product ID: {{this.productId._id}}</p>
                 <p>Quantity: {{this.quantity}}</p>
                 <p>Price: ${{this.productId.price}}</p>
-                <p>Total: ${{multiply this.quantity this.productId.price}}
-                <p>Total: ${{this.productId.price}}</p>
-
-                <form action="/api/carts/{{cart._id}}/products/{{this.productId._id}}?_method=DELETE" method="POST">
+                <p>Total: ${{multiply this.quantity this.productId.price}}</p>
+                <!-- Verificar que cart._id y this.productId._id están correctamente formateados -->
+                <form action="/api/carts/{{../cart._id}}/products/{{this.productId._id}}?_method=DELETE" method="POST">
                     <button type="submit" class="btn btn-danger">Eliminar del Carrito</button>
                 </form>
             </div>
@@ -21,4 +23,5 @@
         <button type="submit" class="btn btn-warning">Vaciar Carrito</button>
     </form>
 </div>
-<script src="../public/js/cart.js"></script>
+<script src="/js/cart.js"></script>
+

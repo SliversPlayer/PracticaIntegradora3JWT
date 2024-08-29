@@ -1,7 +1,4 @@
-
-
 import { Router } from 'express';
-import express from 'express';
 import { getCart, addProductToCart, removeProductFromCart, clearCart } from '../controllers/cart.controller.js';
 import authMiddleware from '../middleware/authMiddleware.js';  // Middleware para verificar autenticación
 
@@ -10,8 +7,8 @@ const router = Router();
 // Ruta para obtener el carrito del usuario autenticado
 router.get('/', authMiddleware, getCart);
 
-// Ruta para agregar un producto al carrito
-router.post('/', authMiddleware, addProductToCart);
+// Ruta para agregar un producto al carrito (Update path to '/add')
+router.post('/add', authMiddleware, addProductToCart);
 
 // Ruta para eliminar un producto del carrito
 router.delete('/remove/:productId', authMiddleware, removeProductFromCart);
@@ -20,3 +17,4 @@ router.delete('/remove/:productId', authMiddleware, removeProductFromCart);
 router.delete('/clear', authMiddleware, clearCart);
 
 export default router;
+
