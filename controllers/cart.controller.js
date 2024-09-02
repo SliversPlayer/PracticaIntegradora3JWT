@@ -1,6 +1,8 @@
 import CartDAO from '../dao/cart.dao.js';
 import userModel from '../models/user.model.js';
 import cartRepository from '../repositories/cart.repository.js';
+import ProductDAO from '../dao/product.dao.js';
+
 
 export const getCart = async (req, res) => {
   try {
@@ -34,8 +36,25 @@ export const getCart = async (req, res) => {
 export const addProductToCart = async (req, res) => {
   try {
       const { productId, quantity } = req.body;
-      const userId = req.user._id; // Corregido para obtener el ID del usuario desde req.user
+      const userId = req.user._id;
+      const userRole = req.user.role;
+
       console.log('Agregando producto al carrito:', { userId, productId, quantity });
+
+      // Verificar si el usuario es premium y si el producto le pertenece
+      if (userRole === 'premium') {
+        // Obtener el producto por su ID
+        const product = await ProductDAO.getById(productId);
+        
+        // Verificar si el producto pertenece al usuario premium
+        if (product.owner === userId.toString()) {
+            return res.status(403).json({ 
+                status: 'error', 
+                message: 'No puedes agregar tus propios productos al carrito.' 
+            });
+        }
+    }
+
       const result = await CartDAO.addProductToCart(userId, productId, quantity);
       res.status(200).json(result);
   } catch (error) {

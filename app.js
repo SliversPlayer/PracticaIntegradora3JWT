@@ -17,6 +17,11 @@ import socketProducts from './listener/socketProducts.js';
 import authRouter from './routes/authRouter.js'; // Importa el router de autenticación JWT
 import mockingRouter from './routes/mocking.router.js';
 import passwordResetRoutes from './routes/passwordReset.routes.js';
+import usersRouter from './routes/users.router.js';  // Ajusta la ruta según tu estructura de proyecto
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerJsdoc from'swagger-jsdoc';
+import { swaggerUi, swaggerSpec } from './config/swagger.config.js';
+
 
 //Helpers
 import { multiply, formatPrice} from './utils/helpers.js'; // Import the multiply helper
@@ -65,6 +70,9 @@ app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api', mockingRouter);
 app.use('/api', passwordResetRoutes);
+app.use('/api/users', usersRouter);
+// Middleware para Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 const httpServer = app.listen(PORT, () => {
     try {
         console.log(`Listening to the port ${PORT}\nAcceder a:`);
@@ -72,6 +80,7 @@ const httpServer = app.listen(PORT, () => {
         console.log(`\t2). http://localhost:${PORT}/api/messages`);
         console.log(`\t3). http://localhost:${PORT}/login`);
         console.log(`\t4). http://localhost:${PORT}/api/mockingproducts`);
+        console.log(`\t5). http://localhost:${PORT}/api-docs`);
     } catch (err) {
         console.log(err);
     }

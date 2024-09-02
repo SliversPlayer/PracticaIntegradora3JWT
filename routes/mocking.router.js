@@ -3,6 +3,19 @@ import generateMockProducts from '../utils/generateMockProducts.js'; // Ajusta l
 
 const router = Router();
 
+/**
+ * @swagger
+ * /api/mockingproducts:
+ *   get:
+ *     summary: Obtener productos de prueba
+ *     tags: [Mocking]
+ *     responses:
+ *       200:
+ *         description: Lista de productos de prueba
+ *       500:
+ *         description: Error interno del servidor
+ */
+
 // Endpoint para obtener productos de prueba
 router.get('/mockingproducts', (req, res) => {
     try {

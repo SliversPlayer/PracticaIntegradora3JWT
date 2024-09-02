@@ -77,3 +77,28 @@ export const isUser = (req, res, next) => {
         res.status(403).json({ message: 'Acceso denegado: Token inválido' });
     }
 };
+
+export const isAdminOrPremium = (req, res, next) => {
+    const authHeader = req.header('Authorization');
+
+    if (!authHeader) {
+        return res.status(403).json({ message: 'Acceso denegado: No autenticado' });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded; // Decodifica y guarda el usuario
+
+        // Permitir si es admin o premium
+        if (decoded.role === 'admin' || decoded.role === 'premium') {
+            return next();
+        }
+
+        return res.status(403).json({ message: 'Acceso denegado: Solo administradores o usuarios premium pueden realizar esta acción.' });
+
+    } catch (error) {
+        res.status(403).json({ message: 'Acceso denegado: Token inválido' });
+    }
+};

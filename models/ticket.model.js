@@ -2,6 +2,32 @@ import mongoose from 'mongoose';
 
 const ticketCollection = "Tickets";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Ticket:
+ *       type: object
+ *       required:
+ *         - code
+ *         - amount
+ *         - purchaser
+ *       properties:
+ *         code:
+ *           type: string
+ *           description: El código único del ticket
+ *         purchase_datetime:
+ *           type: string
+ *           format: date-time
+ *           description: La fecha y hora de la compra
+ *         amount:
+ *           type: number
+ *           description: El monto total de la compra
+ *         purchaser:
+ *           type: string
+ *           description: El ID del usuario que realizó la compra
+ */
+
 const ticketSchema = new mongoose.Schema({
     code: {
         type: String,
