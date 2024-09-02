@@ -43,7 +43,6 @@ function updateProductList(productList) {
     let title = form.elements.title.value
     let description = form.elements.description.value
     let stock = form.elements.stock.value
-    let thumbnail = form.elements.thumbnail.value
     let category = form.elements.category.value
     let price = form.elements.price.value
     let code = form.elements.code.value
@@ -53,7 +52,6 @@ function updateProductList(productList) {
         title,
         description,
         stock,
-        thumbnail,
         category,
         price,
         code,

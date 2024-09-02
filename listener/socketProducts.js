@@ -5,8 +5,20 @@ const socketProducts = (socketServer) => {
         console.log("client connected con ID:", socket.id);
         
         // Emitir la lista de productos al cliente cuando se conecta
+        // const productList = await Product.find();
+        // socket.emit("enviodeproducts", productList);
         const productList = await Product.find();
-        socket.emit("enviodeproducts", productList);
+        const productsWithId = productList.map(product => ({
+            id: product._id.toString(),  // Mapear _id a id y convertir a string
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            category: product.category,
+            stock: product.stock,
+            code: product.code,
+            owner: product.owner
+        }));
+        socket.emit("enviodeproducts", productsWithId);
 
         // Escuchar eventos "addProduct", "deleteProduct" y "updateProduct"
         socket.on("addProduct", async (productData) => {

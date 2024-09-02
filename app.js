@@ -16,6 +16,8 @@ import viewsRouter from '../src/routes/views.router.js';
 import socketProducts from './listener/socketProducts.js';
 import authRouter from './routes/authRouter.js'; // Importa el router de autenticación JWT
 import mockingRouter from './routes/mocking.router.js';
+import passwordResetRoutes from './routes/passwordReset.routes.js';
+
 //Helpers
 import { multiply, formatPrice} from './utils/helpers.js'; // Import the multiply helper
 //TEST
@@ -62,6 +64,7 @@ app.use('/api/messages', messagesRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api', mockingRouter);
+app.use('/api', passwordResetRoutes);
 const httpServer = app.listen(PORT, () => {
     try {
         console.log(`Listening to the port ${PORT}\nAcceder a:`);

@@ -19,8 +19,16 @@ router.get('/register', isNotAuthenticated, (req, res) => {
 router.get('/current', isAuthenticated, (req, res) => {
     res.render('current', { user: req.session.user });
 });
+
+router.get('/forgot-password', (req, res) => {
+    res.render('forgotPassword');
+});
+
+router.get('/reset-password/:token', (req, res) => {
+    res.render('resetPassword', { token: req.params.token });
+});
 router.get("/realTimeProducts",(req,res)=>{
     res.render("realTimeProducts")
-    })
+});
 
-    export default router
+export default router
