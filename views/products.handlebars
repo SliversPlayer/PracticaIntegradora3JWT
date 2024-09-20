@@ -86,8 +86,63 @@
         {{/each}}
     </div>
 
-    <!-- Contenedor para el formulario y los botones de navegación -->
-    <!-- (mantenemos la sección de paginación y navegación como está) -->
+<!-- Contenedor para el formulario y los botones de navegación -->
+    <div class="row justify-content-center mb-3">
+        <!-- Columna para el formulario de navegación -->
+        <div class="col-4">
+            <form action="/api/products" method="GET" onsubmit="setDefaultPage()">
+                <div class="input-group">
+                    <input id="pageNumber" type="number" name="page" class="form-control" placeholder="Número de página" min="1">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Ir</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Columna para los botones de cambio de página -->
+        <div class="col-4 text-center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination mb-0 justify-content-center">
+                    <!-- Botón de página anterior -->
+                    {{#if pagination.hasPrevPage}}
+                    <li class="page-item">
+                        <a class="page-link" href="{{pagination.prevLink}}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {{else}}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </span>
+                    </li>
+                    {{/if}}
+
+                    <!-- Información de la página actual -->
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            Página {{pagination.page}} de {{pagination.totalPages}}
+                        </span>
+                    </li>
+
+                    <!-- Botón de página siguiente -->
+                    {{#if pagination.hasNextPage}}
+                    <li class="page-item">
+                        <a class="page-link" href="{{pagination.nextLink}}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {{else}}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </span>
+                    </li>
+                    {{/if}}
+                </ul>
+            </nav>
+        </div>
 </div>
 
 <!-- Modal para mostrar los detalles del producto -->

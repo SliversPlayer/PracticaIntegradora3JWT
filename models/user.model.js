@@ -56,6 +56,11 @@ const userSchema = new mongoose.Schema({
     cart: { type: mongoose.Schema.Types.ObjectId, ref: 'carts' },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+    documents: [{
+        name: { type: String },
+        reference: { type: String}
+    }],
+    last_connection: Date
 });
 
 userSchema.pre('save', async function (next) {

@@ -6,7 +6,7 @@ import {
     updateProduct,
     deleteProduct
 } from '../controllers/product.controller.js';
-import { isAuthenticated, isAdminOrPremium, isAdmin } from '../middleware/auth.js';
+import { isAuthenticated, isNotAuthenticated,isAdminOrPremium, isAdmin } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -122,10 +122,19 @@ const router = Router();
  *         description: No autorizado
  */
 
-router.get('/', isAuthenticated, listProducts);
+// Listar productos - accesible para todos
+router.get('/', listProducts);
+
+// Obtener un producto por ID - protegido para usuarios autenticados
 router.get('/:pid', isAuthenticated, getProductById);
-router.post('/', isAdmin, addProduct); // Solo admin puede agregar productos
-router.put('/:pid', isAdminOrPremium, updateProduct); // Admin o Premium pueden modificar productos según la lógica en el controlador
-router.delete('/:pid', isAdminOrPremium, deleteProduct); // Admin o Premium pueden eliminar productos según la lógica en el controlador
+
+// Agregar un producto - solo para administradores
+router.post('/', isAdmin, addProduct);
+
+// Actualizar un producto - para administradores y usuarios premium
+router.put('/:pid', isAuthenticated, isAdminOrPremium, updateProduct);
+
+// Eliminar un producto - para administradores y usuarios premium
+router.delete('/:pid', isAuthenticated, isAdminOrPremium, deleteProduct);
 
 export default router;

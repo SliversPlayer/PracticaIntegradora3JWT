@@ -6,7 +6,7 @@ const authMiddleware = (req, res, next) => {
 
     // Check if the token was found
     if (!token) {
-        console.log('Authorization header:', req.headers.authorization);
+        console.log('Authorization header:', req.cookies.authToken);
         return res.status(401).send({ error: 'No token provided, not authenticated' });
     }
     try {
@@ -14,33 +14,13 @@ const authMiddleware = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded; // Attach decoded data to the request object
         next(); // Continue to the next middleware or route handler
-        console.log('Authorization header:', req.headers.authorization);
+        console.log('Authorization header:', req.cookies.authToken);
     } catch (error) {
         console.error('Error decoding JWT:', error);
         res.status(401).send({ error: 'Invalid token' });
-        console.log('Authorization header:', req.headers.authorization);
+        console.log('Authorization headerXX:', req.headers.authorization);
 
     }
 };
 
 export default authMiddleware;
-
-
-// import jwt from 'jsonwebtoken';
-
-// const authMiddleware = (req, res, next) => {
-//     const token = req.cookies.authToken || req.headers.authorization.split(' ')[1];
-//     if (!token) {
-//         return res.status(401).send({ error: 'No token, No autenticado' });
-//     }
-//     try {
-//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//         req.user = decoded;
-//         next();
-//     } catch (error) {
-//         console.error('Error decoding JWT:', error);
-//         res.status(401).send({ error: 'Token inválido' });
-//     }
-// };
-
-// export default authMiddleware;

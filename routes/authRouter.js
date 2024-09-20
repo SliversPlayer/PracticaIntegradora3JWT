@@ -4,6 +4,7 @@ import authMiddleware from '../middleware/authMiddleware.js';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { updateLastConnection } from '../controllers/user.controller.js';  // Importar la función
 
 // Cargar variables de entorno
 dotenv.config();
@@ -21,6 +22,9 @@ authRouter.post('/login', passport.authenticate('login', { failureRedirect: '/fa
         if (!req.user) {
             return res.status(400).send({ status: "error", error: "Datos incompletos" });
         }
+
+        // Actualizar la última conexión al iniciar sesión
+        await updateLastConnection(req.user._id);
 
         // Generar el token JWT
         const token = jwt.sign({
@@ -87,12 +91,20 @@ authRouter.get('/faillogin', (req, res) => {
 });
 
 // Ruta para cerrar sesión
-authRouter.post('/logout', (req, res) => {
-    // Limpiar la cookie authToken
-    res.clearCookie('authToken');
+authRouter.post('/logout', authMiddleware, async (req, res) => {
+    try {
+        // Actualizar la última conexión al cerrar sesión
+        await updateLastConnection(req.user._id);
 
-    // Redirigir al login
-    res.redirect('/login');
+        // Limpiar la cookie authToken
+        res.clearCookie('authToken');
+
+        // Redirigir al login
+        res.redirect('/login');
+    } catch (error) {
+        console.error('Error en /logout:', error);
+        res.status(500).send('Error al cerrar sesión');
+    }
 });
 
 export default authRouter;

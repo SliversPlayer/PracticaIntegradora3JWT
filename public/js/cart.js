@@ -80,6 +80,8 @@ async function addToCart(productId, quantity = 1) {
         console.error('Error al agregar producto al carrito:', error);
     }
 }
+// Función global
+window.addToCart = addToCart;
 
 // Eliminar un producto del carrito
 async function removeFromCart(productId) {

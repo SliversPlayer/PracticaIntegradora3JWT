@@ -1,32 +1,35 @@
 import jwt from 'jsonwebtoken';
 
+// Función auxiliar para obtener el token desde la cabecera o cookies
+const getToken = (req) => {
+    return req.cookies.authToken || (req.header('Authorization') && req.header('Authorization').replace('Bearer ', ''));
+};
 export const isAuthenticated = (req, res, next) => {
-    const authHeader = req.header('Authorization');
+    const token = getToken(req);
     
-    if (!authHeader) {
+    if (!token) {
+        console.log('Authorization header or authToken cookie not found.');
         return res.redirect('/login');
     }
-
-    const token = authHeader.replace('Bearer ', '');
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
     } catch (error) {
+        console.error('Error decoding JWT:', error);
         res.redirect('/login');
     }
 };
 
 export const isNotAuthenticated = (req, res, next) => {
-    const authHeader = req.header('Authorization');
+    const token = getToken(req);
     
-    if (!authHeader) {
+    if (!token) {
         return next(); // Usuario no autenticado, permitir acceso
     }
 
     try {
-        const token = authHeader.replace('Bearer ', '');
         jwt.verify(token, process.env.JWT_SECRET);
         res.redirect('/current'); // Usuario ya autenticado, redirigir a otra página
     } catch (error) {
@@ -35,13 +38,11 @@ export const isNotAuthenticated = (req, res, next) => {
 };
 
 export const isAdmin = (req, res, next) => {
-    const authHeader = req.header('Authorization');
-    
-    if (!authHeader) {
+    const token = getToken(req);
+
+    if (!token) {
         return res.status(403).json({ message: 'Acceso denegado: No autenticado' });
     }
-
-    const token = authHeader.replace('Bearer ', '');
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -57,13 +58,11 @@ export const isAdmin = (req, res, next) => {
 };
 
 export const isUser = (req, res, next) => {
-    const authHeader = req.header('Authorization');
-    
-    if (!authHeader) {
+    const token = getToken(req);
+
+    if (!token) {
         return res.status(403).json({ message: 'Acceso denegado: No autenticado' });
     }
-
-    const token = authHeader.replace('Bearer ', '');
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -79,13 +78,11 @@ export const isUser = (req, res, next) => {
 };
 
 export const isAdminOrPremium = (req, res, next) => {
-    const authHeader = req.header('Authorization');
+    const token = getToken(req);
 
-    if (!authHeader) {
+    if (!token) {
         return res.status(403).json({ message: 'Acceso denegado: No autenticado' });
     }
-
-    const token = authHeader.replace('Bearer ', '');
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);

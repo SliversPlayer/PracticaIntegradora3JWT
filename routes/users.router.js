@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { toggleUserRole } from '../controllers/user.controller.js';
-import { isAuthenticated, isAdmin } from '../middleware/auth.js';
+import { toggleUserRole, uploadUserDocuments } from '../controllers/user.controller.js';
+import upload from '../config/multer.config.js'; // Importar la configuración de Multer
+
 
 const router = Router();
 
@@ -35,7 +36,14 @@ const router = Router();
  *         description: Error interno del servidor
  */
 
-// Ruta para cambiar el rol del usuario entre 'user' y 'premium'
-router.put('/premium/:uid', isAuthenticated, isAdmin, toggleUserRole);
+// Endpoint para subir documentos de usuario
+router.post('/:uid/documents', upload.fields([
+    { name: 'profile', maxCount: 1 },
+    { name: 'product', maxCount: 10 },
+    { name: 'document', maxCount: 10 }
+]), uploadUserDocuments);
+
+// Ruta para cambiar el rol del usuario
+router.put('/premium/:uid', toggleUserRole);
 
 export default router;
