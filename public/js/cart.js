@@ -86,6 +86,12 @@ async function removeFromCart(productId) {
     try {
         console.log("Intentando eliminar producto del carrito:", productId);
 
+        // Verificar que productId no sea nulo o undefined
+        if (!productId) {
+            console.error('El ID del producto es inválido o no proporcionado.');
+            return;
+        }
+
         const response = await fetch(`/api/carts/remove/${productId}`, {
             method: 'DELETE',
             headers: {
@@ -98,7 +104,12 @@ async function removeFromCart(productId) {
 
         if (response.ok) {
             console.log("Producto eliminado del carrito exitosamente.");
+            
+            document.querySelector(`#cart-item-${productId}`).remove();
             loadCart(); // Recargar el carrito después de eliminar un producto
+
+            console.log("Recargando carrito...");
+
         } else {
             const errorText = await response.text();
             console.error('Error al eliminar producto del carrito:', errorText);

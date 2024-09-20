@@ -10,6 +10,12 @@
             <a href="/api/carts/{{user.cartId}}" class="btn btn-success">Ver Carrito</a>
         </div>
     </div>
+        <!-- Botón current -->
+    <div class="row mb-3">
+        <div class="col-md-auto">
+            <a href="/current" class="btn btn-success">Panel de Control</a>
+        </div>
+    </div>
 
     <!-- Formulario de búsqueda por categoría, límite y ordenamiento de productos -->
     <div class="row mb-3">
@@ -162,8 +168,8 @@
                 <p><strong>Stock:</strong> <span id="modalProductStock"></span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="modalAddToCartBtn" data-product-id="">Add to Cart</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
