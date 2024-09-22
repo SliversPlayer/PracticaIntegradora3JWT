@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Admin</title>
+    <link rel="stylesheet" href="/public/CSS/styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Gestión de Usuarios</h1>
+            <a href="/current" class="btn btn-success">Panel de Control</a>        
+        <!-- Botón para obtener todos los usuarios -->
+        <div class="text-center mb-4">
+            <button id="getUsersBtn" class="btn btn-primary">Obtener Todos los Usuarios</button>
+        </div>
+
+        <!-- Mostrar usuarios en una tabla -->
+        <div class="row">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Última Conexión</th>
+                        <th>Inactivo</th>
+                        <th>Cambiar Rol</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- Aquí se insertarán los usuarios dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Botón para eliminar usuarios inactivos -->
+        <div class="text-center mb-4">
+            <button id="deleteInactiveBtn" class="btn btn-danger">Eliminar Usuarios Inactivos</button>
+        </div>
+
+    </div>
+
+    <script src="/js/adminUsers.js"></script>
+</body>
+</html>

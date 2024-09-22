@@ -1,4 +1,5 @@
 import userModel from '../models/user.model.js';
+import { sendDeletionEmail } from '../services/deletionEmail.js';
 
 export const uploadUserDocuments = async (req, res) => {
     try {
@@ -69,6 +70,47 @@ export const toggleUserRole = async (req, res) => {
         res.status(200).json({ status: 'success', message: `Rol actualizado a ${user.role}`, user });
     } catch (error) {
         console.error('Error al cambiar el rol del usuario:', error);
+        res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
+    }
+};
+
+// Eliminar usuarios que no hayan iniciado sesión en los últimos 2 días
+export const deleteInactiveUsers = async (req, res) => {
+    try {
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+        // Buscar usuarios inactivos
+        const inactiveUsers = await userModel.find({
+            last_connection: { $lt: twoDaysAgo },
+        });
+
+        if (inactiveUsers.length === 0) {
+            return res.status(200).json({ status: 'success', message: 'No hay usuarios inactivos para eliminar.' });
+        }
+
+        // Enviar correos y eliminar usuarios
+        const deletionPromises = inactiveUsers.map(async (user) => {
+            await sendDeletionEmail(user.email);
+            await userModel.findByIdAndDelete(user._id);
+        });
+
+        await Promise.all(deletionPromises);
+
+        res.status(200).json({ status: 'success', message: `Se eliminaron ${inactiveUsers.length} usuarios inactivos.` });
+    } catch (error) {
+        console.error('Error al eliminar usuarios inactivos:', error);
+        res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
+    }
+};
+
+// Obtener todos los usuarios con nombre, correo y tipo de cuenta
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await userModel.find({}, 'first_name last_name email role last_connection');  // Solo obtenemos los campos que queremos
+        res.status(200).json({ status: 'success', users });
+    } catch (error) {
+        console.error('Error al obtener usuarios:', error);
         res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
     }
 };

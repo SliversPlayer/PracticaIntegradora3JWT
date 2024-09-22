@@ -20,11 +20,13 @@
                 <p><strong>Edad:</strong> {{user.age}}</p>
                 <p><strong>Nivel:</strong> {{user.role}}</p>
 
+                <a href="/api/products" class="btn btn-primary mb-2">Ver Productos</a>
+
                 <form action="/logout" method="POST">
                     <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
                 </form>
-                <a href="/api/products" class="btn btn-primary mt-3">Ver Productos</a>
 
+                <a href="/adminUsers" class="btn btn-success mt-2">Administrar Usuarios</a>
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { toggleUserRole, uploadUserDocuments } from '../controllers/user.controller.js';
+import { toggleUserRole, uploadUserDocuments, getAllUsers, deleteInactiveUsers } from '../controllers/user.controller.js';
 import upload from '../config/multer.config.js'; // Importar la configuración de Multer
 
 
@@ -35,6 +35,12 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor
  */
+
+// Obtener todos los usuarios (GET /api/users)
+router.get('/', getAllUsers);
+
+// Eliminar usuarios inactivos (DELETE /api/users)
+router.delete('/', deleteInactiveUsers);
 
 // Endpoint para subir documentos de usuario
 router.post('/:uid/documents', upload.fields([

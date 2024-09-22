@@ -105,6 +105,9 @@ router.get('/register', isNotAuthenticated, (req, res) => {
 router.get('/current', isAuthenticated, (req, res) => {
     res.render('current', { user: req.session.user });
 });
+router.get('/adminUsers', (req, res) => {
+    res.render('adminUsers');
+});
 
 router.get('/forgot-password', (req, res) => {
     res.render('forgotPassword');
