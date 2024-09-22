@@ -42,8 +42,11 @@ mongoose.connect(conString, {
     console.error('Error conectándose a MongoDB', error);
 });
 // Configuración de archivos estáticos
+//app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(__dirname + "/src/public"));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(__dirname + "/src/public"));
+
+
 
 // Configure Handlebars with external helper
 const hbs = handlebars.create({
@@ -54,19 +57,22 @@ const hbs = handlebars.create({
     }
 });
 app.engine('handlebars', hbs.engine);
+//app.set('views', path.join(__dirname, 'views'));
 app.set('views', path.join(__dirname, 'views'));
+
 app.set('view engine', 'handlebars');
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Middleware para manejar cookies
 app.use(cookieParser());
-// Montar el router de autenticación JWT en /auth
-app.use('/', authRouter);
+
 // Middleware para manejar las rutas
 app.use('/', viewsRouter);
-app.use('/api/messages', messagesRouter);
+// Montar el router de autenticación JWT en /auth
+app.use('/', authRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/messages', messagesRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api', mockingRouter);
 app.use('/api', passwordResetRoutes);

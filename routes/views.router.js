@@ -103,7 +103,7 @@ router.get('/register', isNotAuthenticated, (req, res) => {
     res.render('register');
 });
 router.get('/current', isAuthenticated, (req, res) => {
-    res.render('current', { user: req.session.user });
+    res.render('current', { user: req.user });
 });
 
 // Vista de administración de usuarios, protegida por isAdmin
