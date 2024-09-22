@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import ProductManager from '../dao/ProductManager.js'
 import { __dirname } from '../utils.js'
-import { isAuthenticated, isNotAuthenticated } from '../middleware/auth.js';
+import { isAuthenticated, isNotAuthenticated, isAdmin } from '../middleware/auth.js';
 
 const pm=new ProductManager(__dirname+'/src/bbdd.json')
 const router = Router();
@@ -105,8 +105,10 @@ router.get('/register', isNotAuthenticated, (req, res) => {
 router.get('/current', isAuthenticated, (req, res) => {
     res.render('current', { user: req.session.user });
 });
-router.get('/adminUsers', (req, res) => {
-    res.render('adminUsers');
+
+// Vista de administración de usuarios, protegida por isAdmin
+router.get('/adminUsers', isAdmin, (req, res) => {
+    res.render('adminUsers', { user: req.user });  // Enviar información del usuario autenticado
 });
 
 router.get('/forgot-password', (req, res) => {

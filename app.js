@@ -22,9 +22,8 @@ import usersRouter from './routes/users.router.js';  // Ajusta la ruta según tu
 // import swaggerJsdoc from'swagger-jsdoc';
 import { swaggerUi, swaggerSpec } from './config/swagger.config.js';
 
-
 //Helpers
-import { multiply, formatPrice} from './utils/helpers.js'; // Import the multiply helper
+import { multiply, formatPrice, eq} from './utils/helpers.js'; // Import the multiply helper
 //TEST
 
 // Cargar variables de entorno
@@ -50,7 +49,8 @@ app.use(express.static(__dirname + "/src/public"));
 const hbs = handlebars.create({
     helpers: {
         multiply, // Register the multiply helper
-        formatPrice
+        formatPrice,
+        eq
     }
 });
 app.engine('handlebars', hbs.engine);

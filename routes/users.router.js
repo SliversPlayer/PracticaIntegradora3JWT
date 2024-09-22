@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { toggleUserRole, uploadUserDocuments, getAllUsers, deleteInactiveUsers, changeUserRole, deleteUser } from '../controllers/user.controller.js';
 import upload from '../config/multer.config.js'; // Importar la configuración de Multer
 
-
 const router = Router();
 
 /**

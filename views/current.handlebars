@@ -20,13 +20,14 @@
                 <p><strong>Edad:</strong> {{user.age}}</p>
                 <p><strong>Nivel:</strong> {{user.role}}</p>
 
-                <a href="/api/products" class="btn btn-primary mb-2">Ver Productos</a>
-
+                <a href="/api/products" class="btn btn-primary">Ver Productos</a>
+                <!-- Mostrar el botón "Administrar Usuarios" solo si el usuario es admin -->
+                {{#if (eq user.role 'admin')}}
+                    <a href="/adminUsers" class="btn btn-success">Administrar Usuarios</a>
+                {{/if}}
                 <form action="/logout" method="POST">
-                    <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
+                    <button type="submit" class="btn btn-danger mt-2">Cerrar Sesión</button>
                 </form>
-
-                <a href="/adminUsers" class="btn btn-success mt-2">Administrar Usuarios</a>
             </div>
         </div>
     </div>
