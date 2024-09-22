@@ -2,6 +2,8 @@ import cartModel from '../models/cart.model.js';
 import userModel from '../models/user.model.js'; // Asegúrate de tener este import
 import logger from '../utils/logger.js'; // Asegúrate de que tu logger está correctamente configurado
 import errorMessages from '../utils/errorMessages.js';; // Asegúrate de que tienes un archivo de constantes para los mensajes de error
+import productModel from '../models/product.model.js'; // Asegúrate de importar el modelo de producto
+
 
 class CartDAO {
     async createCartForUser(userId) {
@@ -39,8 +41,16 @@ class CartDAO {
                 cart = await this.createCartForUser(userId);
             }
 
+            // Obtener el producto desde la base de datos
+            const product = await productModel.findById(productId);
+            if (!product) {
+                throw new Error('Producto no encontrado');
+            }
+
+
             // Verificar si el dueño del producto es el mismo que el dueño del carrito
-            if (product.owner === user.email) {
+            const user = await userModel.findById(userId);
+            if (user.role === 'premium' && product.owner === user.email) {
                 throw new Error('No puedes agregar tu propio producto al carrito');
             }
 

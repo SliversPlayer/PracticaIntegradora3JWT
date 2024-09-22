@@ -120,6 +120,31 @@ async function removeFromCart(productId) {
     }
 }
 
+// Función para procesar la compra
+async function purchaseCart() {
+    try {
+        const response = await fetch('/api/carts/purchase', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alert(data.message); // Mostrar mensaje de éxito
+            // Después de la compra, puedes recargar la página o redirigir a otra página
+            window.location.reload(); // Recargar la página para vaciar el carrito
+        } else {
+            const errorText = await response.text();
+            alert(`Error al procesar la compra: ${errorText}`);
+        }
+    } catch (error) {
+        console.error('Error al procesar la compra:', error);
+    }
+}
+
 // Vaciar el carrito
 async function clearCart() {
     try {

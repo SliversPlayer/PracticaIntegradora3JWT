@@ -1,6 +1,8 @@
 import { Router } from 'express';
-import { getCart, addProductToCart, removeProductFromCart, clearCart } from '../controllers/cart.controller.js';
+import { getCart, addProductToCart, purchaseCart, removeProductFromCart, clearCart } from '../controllers/cart.controller.js';
 import authMiddleware from '../middleware/authMiddleware.js';  // Middleware para verificar autenticación
+import { isAuthenticated } from '../middleware/auth.js';
+
 
 const router = Router();
 
@@ -79,6 +81,9 @@ router.get('/', authMiddleware, getCart);
 
 // Ruta para agregar un producto al carrito (Update path to '/add')
 router.post('/add', authMiddleware, addProductToCart);
+
+// Ruta para procesar la compra
+router.post('/purchase', isAuthenticated, purchaseCart);
 
 // Ruta para eliminar un producto del carrito
 router.delete('/remove/:productId', authMiddleware, removeProductFromCart);

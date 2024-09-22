@@ -63,6 +63,44 @@ export const addProductToCart = async (req, res) => {
   }
 };
 
+export const purchaseCart = async (req, res) => {
+  try {
+      const userId = req.user._id;
+      
+      // Obtener el carrito del usuario
+      const cart = await CartDAO.getCartByUserId(userId);
+
+      if (!cart || cart.products.length === 0) {
+          return res.status(400).json({ message: 'El carrito está vacío' });
+      }
+
+      // Recorrer los productos en el carrito y restar el stock
+      const productUpdates = cart.products.map(async item => {
+          const product = await ProductDAO.getById(item.productId._id);
+
+          // Verificar si hay suficiente stock
+          if (product.stock < item.quantity) {
+              throw new Error(`No hay suficiente stock para el producto: ${product.title}`);
+          }
+
+          // Restar la cantidad comprada del stock
+          product.stock -= item.quantity;
+          await product.save();
+      });
+
+      // Esperar a que se completen todas las actualizaciones de stock
+      await Promise.all(productUpdates);
+
+      // Vaciar el carrito después de la compra
+      await CartDAO.clearCart(userId);
+
+      res.status(200).json({ message: 'Compra realizada con éxito, el carrito ha sido vaciado.' });
+  } catch (error) {
+      console.error('Error al procesar la compra:', error);
+      res.status(500).json({ message: 'Error al procesar la compra' });
+  }
+};
+
 
 export const removeProductFromCart = async (req, res) => {
     try {
@@ -91,6 +129,7 @@ export const clearCart = async (req, res) => {
 export default {
   getCart,
   addProductToCart,
+  purchaseCart,
   removeProductFromCart,
   clearCart
 };
