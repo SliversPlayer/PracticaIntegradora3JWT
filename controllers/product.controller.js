@@ -1,6 +1,10 @@
 import ProductRepositoryImpl from '../repositories/product.repository.impl.js';
-const productRepository = new ProductRepositoryImpl();
 import productDAO from "../dao/product.dao.js";
+import { sendEmail } from '../services/emailService.js';  // Importar la función de envío de correos
+
+
+const productRepository = new ProductRepositoryImpl();
+
 
  export const listProducts = async (req, res) => {
      try {
@@ -102,7 +106,24 @@ export const deleteProduct = async (req, res) => {
       // Verificar los permisos de eliminación
       if (userRole === 'admin' || (userRole === 'premium' && product.owner === userId.toString())) {
           await productRepository.delete(pid);
-          return res.status(200).json({ status: "success", message: "Producto eliminado exitosamente" });
+
+          // Si el producto pertenece a un usuario premium, enviar correo de notificación
+          if (userRole === 'premium' && product.owner === userId.toString()) {
+            
+            const user = await userModel.findById(product.owner);
+            if (user) {
+                const emailContent = `
+                  <p>Estimado/a ${user.first_name},</p>
+                  <p>Le informamos que su producto <strong>${product.title}</strong> ha sido eliminado del sistema.</p>
+                  <p>Si tiene alguna pregunta, no dude en contactarnos.</p>
+                  <p>Saludos,</p>
+                  <p>El equipo de Soporte</p>
+                `;
+                await sendEmail(user.email, 'Producto Eliminado', emailContent);
+            }
+        }
+        
+        return res.status(200).json({ status: "success", message: "Producto eliminado exitosamente" });
       }
 
       // Si no tiene permisos

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { toggleUserRole, uploadUserDocuments, getAllUsers, deleteInactiveUsers } from '../controllers/user.controller.js';
+import { toggleUserRole, uploadUserDocuments, getAllUsers, deleteInactiveUsers, changeUserRole, deleteUser } from '../controllers/user.controller.js';
 import upload from '../config/multer.config.js'; // Importar la configuración de Multer
 
 
@@ -41,6 +41,12 @@ router.get('/', getAllUsers);
 
 // Eliminar usuarios inactivos (DELETE /api/users)
 router.delete('/', deleteInactiveUsers);
+
+// Cambiar rol de usuario
+router.put('/role/:uid', changeUserRole);  // Nueva ruta para cambiar el rol de un usuario
+
+// Eliminar un usuario específico
+router.delete('/:uid', deleteUser);  // Nueva ruta para eliminar un usuario específico
 
 // Endpoint para subir documentos de usuario
 router.post('/:uid/documents', upload.fields([

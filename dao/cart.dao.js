@@ -39,6 +39,11 @@ class CartDAO {
                 cart = await this.createCartForUser(userId);
             }
 
+            // Verificar si el dueño del producto es el mismo que el dueño del carrito
+            if (product.owner === user.email) {
+                throw new Error('No puedes agregar tu propio producto al carrito');
+            }
+
             const productIndex = cart.products.findIndex(p => p.productId.equals(productId));
 
             if (productIndex > -1) {

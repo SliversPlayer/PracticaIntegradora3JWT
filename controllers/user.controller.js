@@ -1,6 +1,48 @@
 import userModel from '../models/user.model.js';
 import { sendDeletionEmail } from '../services/deletionEmail.js';
 
+// Cambiar el rol de un usuario
+export const changeUserRole = async (req, res) => {
+    try {
+        const { uid } = req.params;
+        const { role } = req.body;
+
+        if (!['user', 'premium', 'admin'].includes(role)) {
+            return res.status(400).json({ status: 'error', message: 'Rol no válido' });
+        }
+
+        const user = await userModel.findById(uid);
+        if (!user) {
+            return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
+        }
+
+        user.role = role;
+        await user.save();
+
+        res.status(200).json({ status: 'success', message: `Rol actualizado a ${role}` });
+    } catch (error) {
+        console.error('Error al cambiar el rol del usuario:', error);
+        res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
+    }
+};
+
+// Eliminar un usuario específico
+export const deleteUser = async (req, res) => {
+    try {
+        const { uid } = req.params;
+
+        const user = await userModel.findByIdAndDelete(uid);
+        if (!user) {
+            return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
+        }
+
+        res.status(200).json({ status: 'success', message: 'Usuario eliminado correctamente' });
+    } catch (error) {
+        console.error('Error al eliminar el usuario:', error);
+        res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
+    }
+};
+
 export const uploadUserDocuments = async (req, res) => {
     try {
         const { uid } = req.params;
@@ -52,10 +94,28 @@ export const toggleUserRole = async (req, res) => {
             return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
         }
 
-        // Cambiar el rol de 'user' a 'premium' y viceversa
+        // Si el rol es 'premium', validamos los documentos necesarios
         if (user.role === 'user') {
+            // Verificar que el usuario haya subido los documentos requeridos
+            const requiredDocuments = ['Identificación', 'Comprobante de domicilio', 'Comprobante de estado de cuenta'];
+
+            // Filtrar los documentos cargados por el usuario
+            const uploadedDocuments = user.documents.map(doc => doc.name);
+
+            // Verificar si el usuario tiene todos los documentos necesarios
+            const hasAllDocuments = requiredDocuments.every(doc => uploadedDocuments.includes(doc));
+
+            if (!hasAllDocuments) {
+                return res.status(400).json({ 
+                    status: 'error', 
+                    message: 'No se puede cambiar el rol a premium hasta que se carguen todos los documentos requeridos: Identificación, Comprobante de domicilio, Comprobante de estado de cuenta.' 
+                });
+            }
+
+            // Cambiar el rol a 'premium'
             user.role = 'premium';
         } else if (user.role === 'premium') {
+            // Permitir cambiar de premium a user sin restricciones
             user.role = 'user';
         } else {
             return res.status(400).json({ status: 'error', message: 'Rol del usuario no válido para cambiar' });
